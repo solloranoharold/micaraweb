@@ -72,13 +72,28 @@
           </v-flex>
 
           <v-spacer />
-          <v-btn rounded dark small class="teal darken-2"
+          <v-btn @click="openDialog()" rounded dark small class="teal darken-2"
             ><v-icon>mdi-plus</v-icon>Create Request</v-btn
           >
         </v-toolbar>
       </template>
     </v-data-table>
     <loading-view-vue v-else />
+    <v-dialog v-model="dialog" persistent scrollable max-width="700">
+      <v-card>
+        <v-toolbar dark flat dense color="teal accent-4">
+          <v-toolbar-title
+            >{{
+              editedIndex == -1 ? "Create " : "Update"
+            }}
+            Account</v-toolbar-title
+          >
+          <v-spacer />
+          <v-icon @click="closeDialog()">mdi-close</v-icon>
+        </v-toolbar>
+        <v-card-text></v-card-text>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -93,6 +108,10 @@ export default {
     menu: false,
     search: null,
     loading: false,
+    dialog: false,
+    editedIndex: -1,
+    addObj: {},
+    Transactions: [],
   }),
   created() {
     this.loading = true;
@@ -103,6 +122,15 @@ export default {
   methods: {
     dateFilter() {
       alert(this.date);
+    },
+    openDialog(item) {
+      this.editedIndex = this.Transactions.indexOf(item);
+      this.addOb = { ...item };
+      this.dialog = true;
+    },
+    closeDialog() {
+      this.dialog = false;
+      this.addObj = {};
     },
   },
 };

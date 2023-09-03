@@ -4,18 +4,15 @@ import HomeView from "../views/HomeView.vue";
 import AccountView from "../components/Accounts/AccountsVue";
 import MonitoringView from "../components/Monitoring/MonitoringVue";
 import ReportsView from "../components/Reports/ReportsVue";
-// import store from "store";
+import LoginView from "../components/LoginVue.vue";
+import HomeOwner from "../components/HomeOwnerVue.vue";
+import store from "../store";
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
     name: "home",
-    component: HomeView,
-  },
-  {
-    path: "/login",
-    name: "Login",
     component: HomeView,
   },
   {
@@ -34,6 +31,16 @@ const routes = [
     component: ReportsView,
   },
   {
+    path: "/login",
+    name: "Login",
+    component: LoginView,
+  },
+  {
+    path: "/homeowner",
+    name: "HomeOwner",
+    component: HomeOwner,
+  },
+  {
     path: "/about",
     name: "about",
     // route level code-splitting
@@ -50,29 +57,20 @@ const router = new VueRouter({
   routes,
 });
 
-// router.beforeEach((to, from, next) => {
-//   if(to.path == '/login'){
-//     if(store.state.userInfo){
-//       if( store.state.userInfo.type=='ADMIN' ){
-//         next('/')
-//       }else{
-//         //
-//       }
-//     }else{
-//       next()
-//     }
-//   }else{
-//     if(store.state.userInfo){
-//       if( store.state.userInfo.type=='ADMIN' ){
-//         next('/')
-//       }else{
-//         //
-//       }
-//     }else{
-//       next('/login')
-//     }
-//   }
-
-// })
+router.beforeEach((to, from, next) => {
+  if (to.path == "/login") {
+    if (store.state.userInfo != null) {
+      next("/monitoring");
+    } else {
+      next();
+    }
+  } else {
+    if (store.state.userInfo != null) {
+      next();
+    } else {
+      next("/login");
+    }
+  }
+});
 
 export default router;

@@ -3,6 +3,8 @@ const myPlugins = {
   install(Vue) {
     Vue.mixin({
       data: () => ({
+        api: process.env.VUE_APP_URL,
+        ftp: process.env.VUE_APP_FTP,
         temp: {
           headers: [
             {
