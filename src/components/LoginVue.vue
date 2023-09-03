@@ -17,6 +17,7 @@
               <v-text-field
                 dense
                 v-model="password"
+                type="password"
                 rounded
                 outlined
                 label="Password"
