@@ -247,6 +247,7 @@ export default {
                   showConfirmButton: false,
                   timer: 1500,
                 });
+                this.loading = false;
                 return false;
               }
               if (res.data.users[0].isBan == 0) {
