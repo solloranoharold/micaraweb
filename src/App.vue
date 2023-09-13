@@ -224,8 +224,8 @@
         <v-btn x-small dark color="teal darken-2" @click="dialog = !dialog">
           <v-icon>mdi-account-circle</v-icon>My Account
         </v-btn>
-        <v-btn x-small dark color="teal darken-2" @click="dialog = !dialog">
-          <v-icon @click="logout()">mdi-power</v-icon>Logout
+        <v-btn x-small dark color="teal darken-2" @click="logout()">
+          <v-icon>mdi-power</v-icon>Logout
         </v-btn>
       </v-toolbar>
       <router-view />
