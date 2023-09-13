@@ -220,7 +220,7 @@
       </v-card>
     </v-dialog>
     <v-main>
-      <v-toolbar flat dense>
+      <v-toolbar flat dense v-if="userInfo != null">
         <v-btn x-small dark color="teal darken-2" @click="dialog = !dialog">
           <v-icon>mdi-account-circle</v-icon>My Account
         </v-btn>
