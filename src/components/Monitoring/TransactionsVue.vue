@@ -170,6 +170,8 @@ export default {
       this.axios.get(`${this.api}accounts/loadAccounts`).then((res) => {
         if (res.data) {
           this.HomeOwners = res.data.filter((rec) => {
+            this.this.addObj.vehicle = "N/A";
+            this.this.addObj.plate_no = "N/A";
             if (
               this.monitoring_data &&
               rec.user_id == this.monitoring_data.user_id
