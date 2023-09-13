@@ -309,6 +309,17 @@ export default {
     },
     updateAccount() {
       if (this.type == "password") {
+        if (!this.changePass.password || !this.changePass.cpass) {
+          this.Swal.fire({
+            position: "bottom-end",
+            toast: true,
+            icon: "error",
+            title: "Please complete fields",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          return false;
+        }
         if (
           this.changePass.password.toUpperCase() ==
           this.changePass.cpass.toUpperCase()
