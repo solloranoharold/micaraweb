@@ -340,13 +340,7 @@ export default {
               "YYYY-MM-DD HH:mm:ss A"
             );
             if (rec.username != this.userInfo.username) {
-              if (this.userInfo.position == "Administrator")
-                return rec.position != "Administrator";
-              else if (
-                this.userInfo.position == "Security Guard" &&
-                rec.position != "Administrator"
-              )
-                return rec;
+              return rec;
             }
           });
           this.loading = false;
@@ -431,6 +425,13 @@ export default {
       alert(this.date);
     },
     openDialog(item) {
+      if (
+        this.userInfo.position == "Security Guard" &&
+        item.position != "Home Owner"
+      ) {
+        alert("YOU ARE NOT ALLOWED TO OPEN THIS DETAILS");
+        return false;
+      }
       this.editedIndex = this.Accounts.indexOf(item);
       this.addObj = { ...item };
       this.addObj.index = this.editedIndex;
