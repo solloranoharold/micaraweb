@@ -340,7 +340,8 @@ export default {
               "YYYY-MM-DD HH:mm:ss A"
             );
             if (rec.username != this.userInfo.username) {
-              if (this.userInfo.position == "Administrator") return rec;
+              if (this.userInfo.position == "Administrator")
+                return rec.position != "Administrator";
               else if (
                 this.userInfo.position == "Security Guard" &&
                 rec.position != "Administrator"
