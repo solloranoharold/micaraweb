@@ -18,6 +18,7 @@
         />
       </div>
     </v-app-bar>
+
     <!-- NAVBAR -->
     <v-navigation-drawer
       v-if="userInfo != null"
@@ -73,26 +74,160 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
-      <template v-slot:append>
-        <v-list nav dense>
-          <v-list-item-group active-class="teal accent-2 --text text--accent-2">
-            <v-list-item prepend-icon="mdi-account-circle">
-              <v-list-item-icon>
-                <v-icon>mdi-account</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>My Account</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="logout()">
-              <v-list-item-icon>
-                <v-icon>mdi-power</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Logout</v-list-item-title>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-      </template>
     </v-navigation-drawer>
+    <v-dialog
+      v-model="dialog"
+      scrollable
+      max-width="500px"
+      persistent
+      v-if="userInfo"
+    >
+      <v-card>
+        <v-toolbar flat dense dark color="teal accent-4">
+          <v-toolbar-title>My Account</v-toolbar-title>
+          <v-spacer />
+          <v-icon @click="dialog = !dialog">mdi-close</v-icon>
+        </v-toolbar>
+        <v-card-text>
+          <v-container>
+            <v-btn
+              dark
+              color="teal darken-4"
+              dense
+              x-small
+              @click="type = 'info'"
+              ><v-icon small>mdi-account</v-icon>Information</v-btn
+            >
+            <v-btn
+              dense
+              dark
+              color="teal darken-4"
+              x-small
+              @click="type = 'password'"
+              ><v-icon small>mdi-account</v-icon>Change Password</v-btn
+            >
+            <br /><br />
+            <div v-if="type == 'info'">
+              <v-row>
+                <v-col>
+                  <input
+                    type="file"
+                    dense
+                    outlined
+                    rounded
+                    accept="image/*"
+                    label="Upload Image"
+                    @change="onFileChange($event)"
+                  />
+                  <v-img
+                    aspect-ration="2"
+                    :src="img ? img : `${ftp}users/${userInfo.profile_img}`"
+                  />
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field
+                    dense
+                    v-model="userInfo.fullname"
+                    rounded
+                    outlined
+                    label="Fullname"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-autocomplete
+                    v-model="userInfo.position_id"
+                    :items="Positions"
+                    readonly
+                    item-text="position"
+                    item-value="position_id"
+                    dense
+                    rounded
+                    outlined
+                    label="Position"
+                    append-icon="mdi-note"
+                  ></v-autocomplete>
+                </v-col>
+                <v-col>
+                  <v-text-field
+                    dense
+                    v-model="userInfo.age"
+                    rounded
+                    type="number"
+                    min="1"
+                    outlined
+                    label="Age"
+                  ></v-text-field>
+                </v-col>
+                <v-col>
+                  <v-autocomplete
+                    v-model="userInfo.gender"
+                    :items="['M', 'F']"
+                    dense
+                    rounded
+                    outlined
+                    label="Gender"
+                  ></v-autocomplete>
+                </v-col>
+                <v-col cols="12">
+                  <v-textarea
+                    v-model="userInfo.address"
+                    dense
+                    rounded
+                    outlined
+                    label="Blk/Lot/Street/City"
+                  ></v-textarea>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="userInfo.contactno"
+                    dense
+                    rounded
+                    outlined
+                    label="Contact No"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </div>
+            <div v-else-if="type == 'password'">
+              <v-text-field
+                dense
+                rounded
+                outlined
+                v-model="changePass.password"
+                label="New Password"
+                type="password"
+              ></v-text-field>
+              <v-text-field
+                dense
+                rounded
+                outlined
+                type="password"
+                v-model="changePass.cpass"
+                label="Confirm Password"
+              ></v-text-field>
+            </div>
+            <v-btn
+              v-if="type"
+              block
+              dark
+              color="teal darken-4"
+              small
+              @click="updateAccount()"
+              >UPDATE</v-btn
+            >
+          </v-container>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
     <v-main>
+      <v-toolbar flat dense>
+        <v-btn x-small dark color="teal darken-2" @click="dialog = !dialog">
+          <v-icon>mdi-account-circle</v-icon>My Account
+        </v-btn>
+        <v-btn x-small dark color="teal darken-2" @click="dialog = !dialog">
+          <v-icon @click="logout()">mdi-power</v-icon>Logout
+        </v-btn>
+      </v-toolbar>
       <router-view />
     </v-main>
   </v-app>
@@ -108,7 +243,16 @@ export default {
     },
   },
   data: () => ({
+    Positions: [],
+    img: null,
+    file: null,
+    type: "info",
+    changePass: {
+      password: "",
+      cpass: "",
+    },
     drawer: true,
+    dialog: false,
     admin: [
       { title: "Home", icon: "mdi-home", to: "/" },
       { title: "Accounts", icon: "mdi-account-cog", to: "/accounts" },
@@ -133,12 +277,119 @@ export default {
     ],
   }),
   created() {
-    this.$store.commit("STORE_DATA", this.temp);
+    // this.$store.commit("STORE_DATA", this.temp);
+    this.loadPositions();
   },
   methods: {
+    onFileChange(e) {
+      this.file = e.target.files || e.dataTransfer.files;
+      if (!this.file.length) return;
+      this.createImage();
+    },
+    createImage() {
+      var reader = new FileReader();
+      reader.onload = (e) => {
+        this.img = e.target.result;
+      };
+      reader.readAsDataURL(
+        this.file ? this.file[0] : this.userInfo.profile_img
+      );
+    },
+    loadPositions() {
+      this.axios.get(`${this.api}accounts/positions`).then((res) => {
+        if (res.data)
+          this.Positions = res.data.filter((rec) => {
+            if (this.userInfo && this.userInfo.position == "Administrator")
+              return rec;
+            if (this.userInfo && this.userInfo.position == "Security Guard")
+              return rec.position == "Home Owner";
+            else return rec;
+          });
+      });
+    },
+    updateAccount() {
+      if (this.type == "password") {
+        if (
+          this.changePass.password.toUpperCase() ==
+          this.changePass.cpass.toUpperCase()
+        ) {
+          this.userInfo.password = this.changePass.password;
+        } else {
+          this.Swal.fire({
+            position: "bottom-end",
+            toast: true,
+            icon: "error",
+            title: "Password and Confirm Password not matched!",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          return false;
+        }
+      }
+
+      this.Swal.fire({
+        title: `Are you sure you want to update ${this.type}?`,
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00796B",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes,update it!`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          let formData = new FormData();
+          this.userInfo.profile_img = this.file
+            ? `${this.userInfo.username}_${this.moment().format(
+                "YYYYMMDDHHmmss"
+              )}.${this.file[0].name.split(".")[1]}`
+            : this.userInfo.profile_img
+            ? this.userInfo.profile_img
+            : "";
+
+          if (this.file) {
+            formData.append("myData", JSON.stringify(this.userInfo));
+            formData.append("file", this.file[0]);
+            this.axios
+              .post(`${this.api}accounts/uploadImg`, formData, {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                  dataType: "json",
+                },
+              })
+              .then((res) => {
+                console.log(res.data);
+              });
+          }
+          this.axios
+            .post(`${this.api}accounts/insertUpdateAccounts`, this.userInfo)
+            .then((res) => {
+              if (res.data) {
+                this.Swal.fire({
+                  position: "bottom-end",
+                  toast: true,
+                  icon: "success",
+                  title: `Data has been ${
+                    this.editedIndex == -1 ? "create" : "update"
+                  }d`,
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                this.changePass = {};
+                this.dialog = false;
+                this.$store.commit("STORE_USERINFO", this.userInfo);
+              }
+            });
+        }
+      });
+    },
     logout() {
-      this.$store.commit("STORE_USERINFO", null);
-      this.$router.push("/login");
+      if (confirm("Are you sure you want to logout ? ")) {
+        setTimeout(() => {
+          this.$store.commit("STORE_USERINFO", null);
+          this.$router.push("/login");
+          alert("YOU ARE NOW LOGOUT");
+        }, 1000);
+      }
     },
   },
 };

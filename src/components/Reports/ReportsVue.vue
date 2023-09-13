@@ -1,10 +1,12 @@
 <template>
   <v-container fluid>
-    <center v-if="!isHide">
-      <v-flex md5 lg5 xs10 sm10>
-        <v-card>
-          <v-card-title>Generate Report</v-card-title>
-          <v-card-text>
+    <v-toolbar flat dense>
+      <v-toolbar-title>Generate Report</v-toolbar-title>
+    </v-toolbar>
+    <v-data-table dense :items="Reports" :headers="Headers" v-if="!loading">
+      <template v-slot:top>
+        <v-toolbar flat dense>
+          <v-flex md3>
             <v-menu
               v-model="menu1"
               :close-on-content-click="false"
@@ -29,6 +31,8 @@
               <v-date-picker v-model="date1" @input="date1, (menu1 = false)">
               </v-date-picker>
             </v-menu>
+          </v-flex>
+          <v-flex md3>
             <v-menu
               v-model="menu2"
               :close-on-content-click="false"
@@ -53,35 +57,43 @@
               <v-date-picker v-model="date2" @input="date2, (menu2 = false)">
               </v-date-picker>
             </v-menu>
-            <v-btn color="teal accent-4" dark @click="generateReport()"
-              >Report</v-btn
+          </v-flex>
+          <div class="pb-7">
+            <v-btn small color="teal accent-4" dark @click="generateReport()"
+              ><v-icon>mdi-magnify</v-icon>search</v-btn
             >
-          </v-card-text>
-        </v-card>
-      </v-flex>
-    </center>
-    <v-simple-table v-else>
-      <template v-slot:top>
-        <h3 class="text-center">
-          List of Visitors for {{ date1 }} to {{ date2 }}
-        </h3>
+          </div>
+        </v-toolbar>
+        <v-toolbar flat dense v-if="Reports.length > 0">
+          <v-spacer />
+          <vue-json-to-csv
+            :json-data="Reports"
+            :labels="labels"
+            :csv-title="csvtitle"
+          >
+            <v-btn
+              dark
+              x-small
+              rounded
+              class="teal darken-2"
+              @click="createCSVTitle()"
+              ><v-icon>mdi-file</v-icon>generate report</v-btn
+            >
+          </vue-json-to-csv>
+        </v-toolbar>
       </template>
-      <tbody>
-        <tr v-for="(item, i) in datas.items" :key="i">
-          <td style="border: 1px solid">{{ item.name }}</td>
-          <td style="border: 1px solid">{{ item.calories }}</td>
-          <td style="border: 1px solid">{{ item.fat }}</td>
-          <td style="border: 1px solid">{{ item.carbs }}</td>
-          <td style="border: 1px solid">{{ item.protein }}</td>
-        </tr>
-      </tbody>
-    </v-simple-table>
+    </v-data-table>
+    <loading-view v-else />
   </v-container>
 </template>
 
 <script>
+import VueJsonToCsv from "vue-json-to-csv";
+import LoadingView from "../../views/LoadingView.vue";
 export default {
+  components: { VueJsonToCsv, LoadingView },
   data: () => ({
+    loading: false,
     date1: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
       .substr(0, 10),
@@ -90,25 +102,69 @@ export default {
       .toISOString()
       .substr(0, 10),
     menu2: false,
+    Reports: [],
+    Headers: [
+      { text: "Home Owner", value: "HomeOwner" },
+      { text: "Visitor Name", value: "visitor_name" },
+      { text: "Vehicle", value: "vehicle" },
+      { text: "Plate", value: "plate_no" },
+      { text: "Purpose of Visit", value: "purpose" },
+      { text: "Date Arrival", value: "date_arrival", align: "center" },
+      { text: "Date Departure", value: "date_departure", align: "center" },
+      { text: "Checked By", value: "checker", align: "center" },
+      { text: "Date Created", value: "DateCreated" },
+    ],
+    labels: {
+      HomeOwner: { title: "Home Owner" },
+      visitor_name: { title: "Visitor Name" },
+      vehicle: { title: "Vehicle" },
+      plate_no: { title: "Plate No" },
+      purpose: { title: "Purpose of Visit" },
+      date_arrival: { title: "Date Arrival" },
+      date_departure: { title: "Date Departure" },
+      checker: { title: "Checked By" },
+      DateCreated: { title: "Date Created" },
+    },
+    csvtitle: null,
   }),
   methods: {
+    createCSVTitle() {
+      this.csvtitle = `GeneratedReport_${this.moment().format(
+        "YYYYMMDDHHmms"
+      )}`;
+    },
     generateReport() {
       if (this.date1 > this.date2) {
         alert("Date 1 is greater than Date 2");
         return false;
       }
       this.loading = true;
-      this.$store.commit("HIDE", true);
-
-      console.log("eyyy", this.isHide);
-      setTimeout(() => {
-        window.print();
-      }, 500);
-      setTimeout(() => {
-        this.$store.commit("HIDE", false);
-        console.log("eyyy", this.isHide);
-        this.loading = false;
-      }, 1000);
+      this.axios
+        .get(`${this.api}monitoring/generateReport/${this.date1}/${this.date2}`)
+        .then((res) => {
+          if (res.data) {
+            this.Reports = this._.orderBy(
+              res.data,
+              ["DateCreated"],
+              ["desc"]
+            ).filter((rec) => {
+              rec.date_arrival = this.moment(rec.date_arrival).format(
+                "YYYY-MM-DD HH:mm:ss A"
+              );
+              rec.checker = rec.checker ? rec.checker : "";
+              rec.date_departure = rec.date_departure
+                ? this.moment(rec.date_departure).format(
+                    "YYYY-MM-DD HH:mm:ss A"
+                  )
+                : "";
+              rec.DateCreated = this.moment(rec.DateCreated).format(
+                "YYYY-MM-DD HH:mm:ss"
+              );
+              return rec;
+            });
+          }
+          this.loading = false;
+        });
     },
   },
 };

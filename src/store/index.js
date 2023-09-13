@@ -9,6 +9,7 @@ export default new Vuex.Store({
     isHide: false,
     userInfo: null,
     datas: null,
+    monitoring_data: {},
   },
   getters: {},
   mutations: {
@@ -20,6 +21,9 @@ export default new Vuex.Store({
     },
     HIDE: (state, payload) => {
       state.isHide = payload;
+    },
+    STORE_MONITORING: (state, payload) => {
+      state.monitoring_data = payload;
     },
   },
   actions: {},

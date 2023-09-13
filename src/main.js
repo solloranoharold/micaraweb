@@ -8,11 +8,14 @@ import myMixins from "./plugins/myMixins";
 import axios from "axios";
 import moment from "moment";
 import Swal from "sweetalert2";
+import _ from "lodash";
+
 Vue.config.productionTip = false;
 Vue.use(myMixins);
 Vue.prototype.axios = axios;
 Vue.prototype.moment = moment;
 Vue.prototype.Swal = Swal;
+Vue.prototype._ = _;
 new Vue({
   router,
   store,

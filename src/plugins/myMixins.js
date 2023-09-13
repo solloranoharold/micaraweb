@@ -105,10 +105,15 @@ const myPlugins = {
       }),
 
       computed: {
-        ...mapState(["userInfo", "datas", "isHide"]),
+        ...mapState(["monitoring_data", "userInfo", "datas", "isHide"]),
       },
       methods: {
-        ...mapMutations(["STORE_USERINFO", "STORE_DATA", "HIDE"]),
+        ...mapMutations([
+          "STORE_MONITORING",
+          "STORE_USERINFO",
+          "STORE_DATA",
+          "HIDE",
+        ]),
       },
     });
   },

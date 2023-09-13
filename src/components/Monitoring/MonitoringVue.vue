@@ -6,13 +6,9 @@
         Dashboard</v-toolbar-title
       >
       <v-spacer />
-      <v-btn
-        dark
-        rounded
-        color="teal accent-4"
-        small
-        @click="$router.push('/reports')"
-        ><v-icon>mdi-poll</v-icon>Generate Report</v-btn
+      Total Visitors as of {{ date }} is
+      <strong class="pl-1">
+        <span>{{ Transactions.length }}</span></strong
       >
     </v-toolbar>
 
@@ -47,13 +43,12 @@
     </v-flex>
 
     <v-divider />
-
     <v-data-table
       v-if="!loading"
       dense
       :search="search"
-      :headers="datas.headers"
-      :items="datas.items"
+      :headers="Headers"
+      :items="Transactions"
       item-key="name"
       class="elevation-1"
     >
@@ -61,7 +56,7 @@
         <v-toolbar flat dense>
           <v-flex md4 xs6 lg3 sm4 class="pt-10">
             <v-text-field
-              placeholder="Search Visitor's Name "
+              placeholder="Search...."
               dense
               v-model="search"
               rounded
@@ -77,23 +72,40 @@
           >
         </v-toolbar>
       </template>
+      <template v-slot:[`item.date`]>
+        {{ date }}
+      </template>
+      <template v-slot:[`item.date_arrival`]="{ item }">
+        <v-chip class="ma-2" small shaped outlined color="teal darken-2">
+          <v-icon small>mdi-calendar</v-icon>
+          {{ item.date_arrival }}
+        </v-chip>
+      </template>
+      <template v-slot:[`item.date_departure`]="{ item }">
+        <v-btn
+          x-small
+          rounded
+          outlined
+          @click="addDeparture(item)"
+          dark
+          class="teal darken-2"
+          v-if="item.date_departure == 'Invalid date' || !item.date_departure"
+          ><v-icon small>mdi-calendar</v-icon>add date</v-btn
+        >
+        <span v-else>
+          <v-chip class="ma-2" small shaped outlined color="red darken-2">
+            <v-icon small>mdi-calendar</v-icon>
+            {{ item.date_departure }}
+          </v-chip>
+        </span>
+      </template>
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-icon dark color="success" @click="openDialog(item)">{{
+          userInfo.position == "Administrator" ? "mdi-pencil" : "mdi-eye"
+        }}</v-icon>
+      </template>
     </v-data-table>
     <loading-view-vue v-else />
-    <v-dialog v-model="dialog" persistent scrollable max-width="700">
-      <v-card>
-        <v-toolbar dark flat dense color="teal accent-4">
-          <v-toolbar-title
-            >{{
-              editedIndex == -1 ? "Create " : "Update"
-            }}
-            Account</v-toolbar-title
-          >
-          <v-spacer />
-          <v-icon @click="closeDialog()">mdi-close</v-icon>
-        </v-toolbar>
-        <v-card-text></v-card-text>
-      </v-card>
-    </v-dialog>
   </v-container>
 </template>
 
@@ -112,25 +124,96 @@ export default {
     editedIndex: -1,
     addObj: {},
     Transactions: [],
+    Headers: [
+      { text: "Home Owner", value: "HomeOwner" },
+      { text: "Visitor Name", value: "visitor_name" },
+      { text: "Vehicle", value: "vehicle" },
+      { text: "Plate", value: "plate_no" },
+      { text: "Purpose of Visit", value: "purpose" },
+      { text: "Date Arrival", value: "date_arrival", align: "center" },
+      { text: "Date Departure", value: "date_departure", align: "center" },
+      { text: "Checked By", value: "checker", align: "center" },
+      { text: "Date Added", value: "DateCreated" },
+      { text: "Actions", value: "actions" },
+    ],
   }),
   created() {
-    this.loading = true;
-    setTimeout(() => {
-      this.loading = false;
-    }, 1000);
+    this.loadMonitoring();
   },
   methods: {
+    loadMonitoring() {
+      this.loading = true;
+      this.axios
+        .post(`${this.api}monitoring/loadTransaction`, {
+          userInfo: this.userInfo,
+          date: this.date,
+        })
+        .then((res) => {
+          if (res.data)
+            this.Transactions = this._.orderBy(
+              res.data,
+              ["DateCreated"],
+              ["desc"]
+            ).filter((rec) => {
+              rec.date_arrival = this.moment(rec.date_arrival).format(
+                "YYYY-MM-DD HH:mm:ss A"
+              );
+              rec.date_departure = rec.date_departure
+                ? this.moment(rec.date_departure).format(
+                    "YYYY-MM-DD HH:mm:ss A"
+                  )
+                : null;
+              rec.DateCreated = this.moment(rec.DateCreated).format(
+                "YYYY-MM-DD HH:mm:ss"
+              );
+              return rec;
+            });
+          this.loading = false;
+        });
+    },
+    addDeparture(item) {
+      item.index = 1;
+
+      this.Swal.fire({
+        title: `Are you sure you want to add departure date ?`,
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00796B",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes, add departure date!`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          item.checkedBy = this.userInfo.user_id;
+          item.date_departure = this.moment().format("YYYY-MM-DD HH:mm:ss");
+          this.axios
+            .post(`${this.api}monitoring/insertUpdateRequest`, item)
+            .then((res) => {
+              if (res.data) {
+                this.Swal.fire({
+                  position: "bottom-end",
+                  toast: true,
+                  icon: "success",
+                  title: "Data hasa been updated!",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                this.loadMonitoring();
+              }
+            });
+        }
+      });
+    },
     dateFilter() {
-      alert(this.date);
+      this.loadMonitoring();
+      this.menu = false;
     },
     openDialog(item) {
-      this.editedIndex = this.Transactions.indexOf(item);
-      this.addOb = { ...item };
-      this.dialog = true;
-    },
-    closeDialog() {
-      this.dialog = false;
-      this.addObj = {};
+      console.log(item);
+      this.$store.commit("STORE_MONITORING", item ? item : null);
+      setTimeout(() => {
+        this.$router.push("/transaction");
+      }, 500);
     },
   },
 };

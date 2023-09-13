@@ -6,6 +6,7 @@ import MonitoringView from "../components/Monitoring/MonitoringVue";
 import ReportsView from "../components/Reports/ReportsVue";
 import LoginView from "../components/LoginVue.vue";
 import HomeOwner from "../components/HomeOwnerVue.vue";
+import TransactionVue from "../components/Monitoring/TransactionsVue";
 import store from "../store";
 Vue.use(VueRouter);
 
@@ -41,6 +42,11 @@ const routes = [
     component: HomeOwner,
   },
   {
+    path: "/transaction",
+    name: "TransactionVue",
+    component: TransactionVue,
+  },
+  {
     path: "/about",
     name: "about",
     // route level code-splitting
@@ -64,12 +70,14 @@ router.beforeEach((to, from, next) => {
     } else {
       next();
     }
-  } else {
+  } else if (to.path != "/transaction") {
     if (store.state.userInfo != null) {
       next();
     } else {
       next("/login");
     }
+  } else {
+    next();
   }
 });
 

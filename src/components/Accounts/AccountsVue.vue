@@ -51,7 +51,7 @@
         <v-toolbar flat dense>
           <v-flex md4 xs6 lg3 sm4 class="pt-10">
             <v-text-field
-              placeholder="Search Visitor's Name "
+              placeholder="Search..."
               dense
               v-model="search"
               rounded
@@ -524,6 +524,8 @@ export default {
               ? `${this.addObj.username}_${this.moment().format(
                   "YYYYMMDDHHmmss"
                 )}.${this.file[0].name.split(".")[1]}`
+              : this.addObj.profile_img
+              ? this.addObj.profile_img
               : "";
             if (this.file) {
               formData.append("myData", JSON.stringify(this.addObj));

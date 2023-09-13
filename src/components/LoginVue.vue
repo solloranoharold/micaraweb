@@ -20,6 +20,7 @@
                 type="password"
                 rounded
                 outlined
+                @keypress.enter="loginAccount()"
                 label="Password"
               ></v-text-field>
               <v-card-actions>
