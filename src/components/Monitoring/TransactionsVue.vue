@@ -72,6 +72,9 @@
               outlined
               required
             ></v-text-field>
+            <label
+              >NOTE: Put N/A both vehicle and plate no if you dont have vehicle
+            </label>
             <v-text-field
               color="teal accent-4"
               label="Vehicle"
@@ -170,8 +173,8 @@ export default {
       this.axios.get(`${this.api}accounts/loadAccounts`).then((res) => {
         if (res.data) {
           this.HomeOwners = res.data.filter((rec) => {
-            this.this.addObj.vehicle = "N/A";
-            this.this.addObj.plate_no = "N/A";
+            this.addObj.vehicle = "N/A";
+            this.addObj.plate_no = "N/A";
             if (
               this.monitoring_data &&
               rec.user_id == this.monitoring_data.user_id
