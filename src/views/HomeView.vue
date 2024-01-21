@@ -71,7 +71,7 @@
           :color="`#${Math.floor(Math.random() * 16777215).toString(16)}`"
         >
           <v-card-text>
-            <h3>VISITORS FOR {{ getDayStr }},{{ year }}</h3>
+            <h3>VISITORS FOR TODAY</h3>
             <v-col cols="3">
               <v-layout>
                 <v-icon x-large>mdi-account</v-icon>
@@ -254,10 +254,11 @@ export default {
       this.loading = true;
       this.axios
         .get(
-          `${this.api}monitoring/generateReport/${this.year}-01-31/${this.year}-12-31`
+          `${this.api}monitoring/generateReport/${this.year}-01-01/${this.year}-12-31`
         )
         .then((res) => {
           if (res.data) {
+            console.log("data", res.data);
             let data = this.Months.map((item) => {
               res.data.filter((rec) => {
                 if (rec.DateCreated.includes(`${this.year}-${item.month}`))

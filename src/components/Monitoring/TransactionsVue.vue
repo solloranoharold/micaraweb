@@ -26,6 +26,7 @@
           <v-divider style="border: 1px solid" />
           <v-card-text>
             <v-autocomplete
+              :readonly="userInfo && userInfo.position == 'Home Owner'"
               color="teal accent-4"
               label=" Name "
               dense
@@ -185,6 +186,11 @@ export default {
 
             return rec.position == "Home Owner";
           });
+          if (this.userInfo.position == "Home Owner") {
+            this.addObj = this.HomeOwners.filter((rec) => {
+              return rec.user_id == this.userInfo.user_id;
+            })[0];
+          }
           this.$store.commit("STORE_MONITORING", null);
           this.loading = false;
         }

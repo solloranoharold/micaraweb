@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar
-      v-if="isHide == false && userInfo != null"
+      v-if="isHide == false && userInfo != null && isShow == false"
       app
       dark
       class="teal accent-4"
@@ -17,14 +17,68 @@
           width="150"
         />
       </div>
+      <v-spacer />
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            icon
+            dark
+            v-bind="attrs"
+            v-on="on"
+            @click="$router.push('/about')"
+          >
+            <v-icon x-large>mdi-information</v-icon>
+          </v-btn>
+        </template>
+        <span>ABOUT US</span>
+      </v-tooltip>
     </v-app-bar>
+    <v-footer id="footer" inset width="auto" app dark padless v-if="!userInfo">
+      <v-card flat tile class="cyan darken-4 flex text-center">
+        <v-card-text>
+          <h4 class="pa-2 text-center" style="text-decoration: underline">
+            ABOUT US
+          </h4>
+          Micara Estates - Tanza is a 70 hectares property land developed by
+          Property of Friends Inc. situated along Antero Soriano Highway Brgy.
+          Sahud-Ulan Tanza, Cavite.
+          <h4 class="pa-2 text-center" style="text-decoration: underline">
+            CONTACT US
+          </h4>
+          Viber | Whatsapp | WeChat | IMO | Skype<br />
+          +63917-512-5471 (Globe) | +63998-978-9039 (Smart)
+          <br />
 
+          EMAIL US AT: micaracavite@gmail.com
+        </v-card-text>
+        <v-card-text class="white--text pt-0"></v-card-text>
+        <v-card-text class="white--text">
+          <v-btn
+            small
+            v-for="(icon, i) in icons"
+            :key="i"
+            class="mx-4 white--text"
+            icon
+          >
+            <a
+              style="color: white; text-decoration: none"
+              :href="`${icon.link}`"
+              target="_blank"
+            >
+              <v-icon>
+                {{ icon.icon }}
+              </v-icon>
+              {{ icon.link }}
+            </a>
+          </v-btn>
+        </v-card-text>
+      </v-card>
+    </v-footer>
     <!-- NAVBAR -->
     <v-navigation-drawer
-      v-if="userInfo != null"
+      v-if="userInfo != null && isShow == false"
       v-model="drawer"
       app
-      fixed
       width="250"
     >
       <div class="d-flex align-center">
@@ -220,7 +274,7 @@
       </v-card>
     </v-dialog>
     <v-main>
-      <v-toolbar flat dense v-if="userInfo != null">
+      <v-toolbar flat dense v-if="userInfo != null && isShow == false">
         <v-btn x-small dark color="teal darken-2" @click="dialog = !dialog">
           <v-icon>mdi-account-circle</v-icon>My Account
         </v-btn>
@@ -243,6 +297,7 @@ export default {
     },
   },
   data: () => ({
+    icons: [{ icon: "mdi-facebook", link: "www.facebook.com/MicaraCavite" }],
     Positions: [],
     img: null,
     file: null,
@@ -405,4 +460,14 @@ export default {
   },
 };
 </script>
-<style scoped></style>
+<style scoped>
+#footer {
+  position: fixed;
+  bottom: 0;
+}
+@media (max-width: 960px) {
+  #footer {
+    display: none;
+  }
+}
+</style>

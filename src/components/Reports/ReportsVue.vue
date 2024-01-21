@@ -76,6 +76,22 @@
               x-small
               rounded
               class="teal darken-2"
+              @click="
+                $router.push({
+                  name: 'PDFVue',
+                  params: {
+                    date1: date1,
+                    date2: date2,
+                  },
+                })
+              "
+              ><v-icon>mdi-file-pdf-box</v-icon>generate pdf</v-btn
+            >
+            <v-btn
+              dark
+              x-small
+              rounded
+              class="teal darken-2"
               @click="createCSVTitle()"
               ><v-icon>mdi-file</v-icon>generate report</v-btn
             >

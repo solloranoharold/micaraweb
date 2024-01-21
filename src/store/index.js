@@ -10,6 +10,7 @@ export default new Vuex.Store({
     userInfo: null,
     datas: null,
     monitoring_data: {},
+    isShow: false,
   },
   getters: {},
   mutations: {
@@ -24,6 +25,9 @@ export default new Vuex.Store({
     },
     STORE_MONITORING: (state, payload) => {
       state.monitoring_data = payload;
+    },
+    HIDE_APP: (state, payload) => {
+      state.isShow = payload;
     },
   },
   actions: {},

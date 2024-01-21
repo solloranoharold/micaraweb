@@ -55,6 +55,10 @@
               prepend-inner-icon="mdi-magnify"
             ></v-text-field>
           </v-flex>
+          <v-spacer />
+          <v-btn @click="openDialog()" rounded dark small class="teal darken-2"
+            ><v-icon>mdi-plus</v-icon>Create Request</v-btn
+          >
         </v-toolbar>
       </template>
       <template v-slot:[`item.date`]>
@@ -106,6 +110,13 @@ export default {
     this.loadMonitoring();
   },
   methods: {
+    openDialog(item) {
+      console.log(item);
+      this.$store.commit("STORE_MONITORING", item ? item : null);
+      setTimeout(() => {
+        this.$router.push("/transaction");
+      }, 500);
+    },
     loadMonitoring() {
       this.loading = true;
       this.axios

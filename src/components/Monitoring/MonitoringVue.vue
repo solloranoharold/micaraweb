@@ -173,7 +173,9 @@ export default {
     },
     addDeparture(item) {
       item.index = 1;
-
+      item.date_arrival = this.moment(item.date_arrival).format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
       this.Swal.fire({
         title: `Are you sure you want to add departure date ?`,
         text: "You won't be able to revert this!",

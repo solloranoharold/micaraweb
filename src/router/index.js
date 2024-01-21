@@ -4,6 +4,7 @@ import HomeView from "../views/HomeView.vue";
 import AccountView from "../components/Accounts/AccountsVue";
 import MonitoringView from "../components/Monitoring/MonitoringVue";
 import ReportsView from "../components/Reports/ReportsVue";
+import PDFVue from "../components/Reports/PDFVue";
 import LoginView from "../components/LoginVue.vue";
 import HomeOwner from "../components/HomeOwnerVue.vue";
 import TransactionVue from "../components/Monitoring/TransactionsVue";
@@ -45,6 +46,12 @@ const routes = [
     path: "/transaction",
     name: "TransactionVue",
     component: TransactionVue,
+  },
+  {
+    path: "/pdfvue/:date1/:date2",
+    name: "PDFVue",
+    component: PDFVue,
+    props: true,
   },
   {
     path: "/about",
