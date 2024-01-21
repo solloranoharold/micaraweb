@@ -111,7 +111,7 @@
     <v-btn
       v-if="
         (userInfo && editedIndex == -1) ||
-        userInfo.position == 'Home Owner' ||
+        (userInfo && userInfo.position == 'Home Owner') ||
         !userInfo
       "
       @click="submitData()"
@@ -178,7 +178,7 @@ export default {
       this.loading = true;
       this.axios.get(`${this.api}accounts/loadAccounts`).then((res) => {
         if (res.data) {
-          if (this.userInfo.position == "Home Owner") {
+          if (this.userInfo && this.userInfo.position == "Home Owner") {
             this.addObj = {
               ...res.data.filter((rec) => {
                 return rec.user_id == this.userInfo.user_id;
@@ -288,7 +288,7 @@ export default {
                 }
               }
               this.$router.push(
-                this.userInfo.position == "Home Owner"
+                this.userInfo && this.userInfo.position == "Home Owner"
                   ? "/homeowner"
                   : "/monitoring"
               );
