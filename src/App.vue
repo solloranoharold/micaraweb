@@ -58,18 +58,13 @@
             v-for="(icon, i) in icons"
             :key="i"
             class="mx-4 white--text"
-            icon
+            text
+            @click="openLink(icon.link)"
           >
-            <a
-              style="color: white; text-decoration: none"
-              :href="`${icon.link}`"
-              target="_blank"
-            >
-              <v-icon>
-                {{ icon.icon }}
-              </v-icon>
-              {{ icon.link }}
-            </a>
+            <v-icon>
+              {{ icon.icon }}
+            </v-icon>
+            {{ icon.name }}
           </v-btn>
         </v-card-text>
       </v-card>
@@ -297,7 +292,13 @@ export default {
     },
   },
   data: () => ({
-    icons: [{ icon: "mdi-facebook", link: "www.facebook.com/MicaraCavite" }],
+    icons: [
+      {
+        icon: "mdi-facebook",
+        link: "https://www.facebook.com/MicaraTanza1",
+        name: "facebook.com/MicaraTanza1",
+      },
+    ],
     Positions: [],
     img: null,
     file: null,
@@ -335,6 +336,9 @@ export default {
     this.loadPositions();
   },
   methods: {
+    openLink(link) {
+      window.open(link, "_blank");
+    },
     onFileChange(e) {
       this.file = e.target.files || e.dataTransfer.files;
       if (!this.file.length) return;
