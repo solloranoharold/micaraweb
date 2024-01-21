@@ -11,7 +11,7 @@
           <v-divider />
           <v-row no-gutters v-if="!loading">
             <v-col md="6" xs="12" sm="12" lg="6">
-              <v-img width="60%" src="micaraland-logo-final.png"> </v-img>
+              <v-img width="40%" src="micaraland-logo-final.png"> </v-img>
               <center>Scan this for visitors</center>
               <v-img width="35%" src="../assets/img/qrcode.png"> </v-img>
             </v-col>

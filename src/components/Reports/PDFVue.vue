@@ -45,19 +45,24 @@ export default {
   }),
   created() {
     this.datetoday = this.moment().format("YYYY-MM-DD HH:mm:ss A");
-    this.$store.commit("HIDE_APP", true);
     this.generateReport();
-    this.print();
   },
   methods: {
-    async print() {
-      await window.print();
-      await this.$store.commit("HIDE_APP", false);
-      await this.$router.push("/reports");
+    async printData() {
+      await this.$store.commit("HIDE_APP", true);
+      await this.print().then(async () => {
+        await this.$store.commit("HIDE_APP", false);
+        await this.$router.push("/reports");
+      });
     },
-    generateReport() {
+    print() {
+      return new Promise((resolve) => {
+        resolve(window.print());
+      });
+    },
+    async generateReport() {
       this.loading = true;
-      this.axios
+      await this.axios
         .get(
           `${this.api}monitoring/generateReport/${this.$route.params.date1}/${this.$route.params.date2}`
         )
@@ -85,6 +90,8 @@ export default {
           }
           this.loading = false;
         });
+
+      await this.printData();
     },
   },
 };
