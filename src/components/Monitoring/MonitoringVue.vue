@@ -76,10 +76,22 @@
         {{ date }}
       </template>
       <template v-slot:[`item.date_arrival`]="{ item }">
-        <v-chip class="ma-2" small shaped outlined color="teal darken-2">
-          <v-icon small>mdi-calendar</v-icon>
-          {{ item.date_arrival }}
-        </v-chip>
+        <v-btn
+          x-small
+          rounded
+          outlined
+          @click="addArrival(item)"
+          dark
+          class="teal darken-2"
+          v-if="item.date_arrival == 'Invalid date' || !item.date_arrival"
+          ><v-icon small>mdi-calendar</v-icon>add date</v-btn
+        >
+        <span v-else>
+          <v-chip class="ma-2" small shaped outlined color="green darken-2">
+            <v-icon small>mdi-calendar</v-icon>
+            {{ item.date_arrival }}
+          </v-chip>
+        </span>
       </template>
       <template v-slot:[`item.date_departure`]="{ item }">
         <v-btn
@@ -88,7 +100,7 @@
           outlined
           @click="addDeparture(item)"
           dark
-          class="teal darken-2"
+          class="red darken-2"
           v-if="item.date_departure == 'Invalid date' || !item.date_departure"
           ><v-icon small>mdi-calendar</v-icon>add date</v-btn
         >
@@ -155,9 +167,9 @@ export default {
               ["DateCreated"],
               ["desc"]
             ).filter((rec) => {
-              rec.date_arrival = this.moment(rec.date_arrival).format(
-                "YYYY-MM-DD HH:mm:ss A"
-              );
+              rec.date_arrival = rec.date_arrival
+                ? this.moment(rec.date_arrival).format("YYYY-MM-DD HH:mm:ss A")
+                : null;
               rec.date_departure = rec.date_departure
                 ? this.moment(rec.date_departure).format(
                     "YYYY-MM-DD HH:mm:ss A"
@@ -170,6 +182,39 @@ export default {
             });
           this.loading = false;
         });
+    },
+    addArrival(item) {
+      item.index = 1;
+      delete item.date_departure;
+      this.Swal.fire({
+        title: `Are you sure you want to add arrival date ?`,
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#00796B",
+        cancelButtonColor: "#d33",
+        confirmButtonText: `Yes, add arrival date!`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          item.checkedBy = this.userInfo.user_id;
+          item.date_arrival = this.moment().format("YYYY-MM-DD HH:mm:ss");
+          this.axios
+            .post(`${this.api}monitoring/insertUpdateRequest`, item)
+            .then((res) => {
+              if (res.data) {
+                this.Swal.fire({
+                  position: "bottom-end",
+                  toast: true,
+                  icon: "success",
+                  title: "Data hasa been updated!",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                this.loadMonitoring();
+              }
+            });
+        }
+      });
     },
     addDeparture(item) {
       item.index = 1;

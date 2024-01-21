@@ -215,13 +215,12 @@ export default {
         return false;
       }
       if (this.editedIndex == -1) {
-        this.addObj.date_arrival = this.moment().format("YYYY-MM-DD HH:mm:ss");
         let i = this.Monitoring.findIndex(
           (x) =>
             x.user_id == this.addObj.user_id &&
             this.addObj.visitor_name.toUpperCase() ==
               x.visitor_name.toUpperCase() &&
-            this.moment(x.date_arrival).format("YYYY-MM-DD") ==
+            this.moment(x.date_created).format("YYYY-MM-DD") ==
               this.dateToday &&
             !x.date_departure
         );
