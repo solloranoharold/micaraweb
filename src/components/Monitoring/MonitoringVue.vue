@@ -196,6 +196,7 @@ export default {
         confirmButtonText: `Yes, add arrival date!`,
       }).then((result) => {
         if (result.isConfirmed) {
+          this.loading = true;
           item.checkedBy = this.userInfo.user_id;
           item.date_arrival = this.moment().format("YYYY-MM-DD HH:mm:ss");
           this.axios
@@ -233,6 +234,7 @@ export default {
         if (result.isConfirmed) {
           item.checkedBy = this.userInfo.user_id;
           item.date_departure = this.moment().format("YYYY-MM-DD HH:mm:ss");
+          this.loading = true;
           this.axios
             .post(`${this.api}monitoring/insertUpdateRequest`, item)
             .then((res) => {

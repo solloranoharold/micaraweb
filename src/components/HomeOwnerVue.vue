@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container fluid v-if="!loading">
     <v-toolbar flat dense>
       <v-toolbar-title>List of Visitor's</v-toolbar-title>
     </v-toolbar>
@@ -65,7 +65,14 @@
         {{ date }}
       </template>
       <template v-slot:[`item.date_arrival`]="{ item }">
-        <v-chip class="ma-2" small shaped outlined color="teal darken-2">
+        <v-chip
+          class="ma-2"
+          small
+          shaped
+          outlined
+          color="teal darken-2"
+          v-if="item.date_arrival != 'Invalid Date' && item.date_arrival"
+        >
           <v-icon small>mdi-calendar</v-icon>
           {{ item.date_arrival }}
         </v-chip>
@@ -83,13 +90,21 @@
           {{ item.date_departure }}
         </v-chip>
       </template>
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-icon color="primary" @click="openDialog(item)">mdi-eye</v-icon>
+      </template>
     </v-data-table>
   </v-container>
+  <loading-view-vue v-else />
 </template>
 
 <script>
+import LoadingViewVue from "../views/LoadingView.vue";
+
 export default {
+  components: { LoadingViewVue },
   data: () => ({
+    loading: false,
     Transactions: [],
     search: null,
     date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -104,6 +119,7 @@ export default {
       { text: "Date Arrival", value: "date_arrival", align: "center" },
       { text: "Date Departure", value: "date_departure", align: "center" },
       { text: "Date Added", value: "date" },
+      { text: "View", value: "actions" },
     ],
   }),
   created() {
@@ -127,9 +143,9 @@ export default {
         .then((res) => {
           if (res.data)
             this.Transactions = res.data.filter((rec) => {
-              rec.date_arrival = this.moment(rec.date_arrival).format(
-                "YYYY-MM-DD HH:mm:ss A"
-              );
+              rec.date_arrival = rec.date_arrival
+                ? this.moment(rec.date_arrival).format("YYYY-MM-DD HH:mm:ss A")
+                : null;
               rec.date_departure = rec.date_departure
                 ? this.moment(rec.date_departure).format(
                     "YYYY-MM-DD HH:mm:ss A"

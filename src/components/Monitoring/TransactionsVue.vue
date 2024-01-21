@@ -109,7 +109,11 @@
     </v-row>
     <br />
     <v-btn
-      v-if="(userInfo && editedIndex == -1) || !userInfo"
+      v-if="
+        (userInfo && editedIndex == -1) ||
+        userInfo.position == 'Home Owner' ||
+        !userInfo
+      "
       @click="submitData()"
       dark
       block
@@ -150,6 +154,7 @@ export default {
     if (this.monitoring_data !== null) {
       console.log(this.monitoring_data, "qweqweq");
       this.addObj = JSON.parse(JSON.stringify(this.monitoring_data));
+
       this.editedIndex = 1;
     }
   },
@@ -173,6 +178,13 @@ export default {
       this.loading = true;
       this.axios.get(`${this.api}accounts/loadAccounts`).then((res) => {
         if (res.data) {
+          if (this.userInfo.position == "Home Owner") {
+            this.addObj = {
+              ...res.data.filter((rec) => {
+                return rec.user_id == this.userInfo.user_id;
+              })[0],
+            };
+          }
           this.HomeOwners = res.data.filter((rec) => {
             this.addObj.vehicle = "N/A";
             this.addObj.plate_no = "N/A";
@@ -186,11 +198,7 @@ export default {
 
             return rec.position == "Home Owner";
           });
-          if (this.userInfo.position == "Home Owner") {
-            this.addObj = this.HomeOwners.filter((rec) => {
-              return rec.user_id == this.userInfo.user_id;
-            })[0];
-          }
+
           this.$store.commit("STORE_MONITORING", null);
           this.loading = false;
         }
@@ -279,6 +287,11 @@ export default {
                   });
                 }
               }
+              this.$router.push(
+                this.userInfo.position == "Home Owner"
+                  ? "/homeowner"
+                  : "/monitoring"
+              );
             });
         }
       });

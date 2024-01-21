@@ -323,7 +323,6 @@ export default {
       },
     ],
     guard: [
-      { title: "Accounts", icon: "mdi-account-cog", to: "/accounts" },
       {
         title: "Monitoring Dashboard",
         icon: "mdi-monitor-dashboard",
