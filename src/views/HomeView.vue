@@ -114,10 +114,14 @@
 
     <LineChart
       v-if="chart == 'Line'"
-      :chartdata="chartData"
+      :chartdata="chartData.datasets.length ? chartData : null"
       :options="options"
     />
-    <BarChart v-else :chartdata="chartData" :options="options" />
+    <BarChart
+      v-else
+      :chartdata="chartData.datasets.length ? chartData : null"
+      :options="options"
+    />
   </v-container>
   <loading-view v-else />
 </template>
@@ -167,6 +171,7 @@ export default {
         "November",
         "December",
       ],
+      datasets: [],
     },
     options: {
       animation: {
@@ -226,6 +231,11 @@ export default {
     },
   },
   methods: {
+    refreshMonths() {
+      this.Months.filter((rec) => {
+        return (rec.x = 0);
+      });
+    },
     loadAccounts() {
       this.loading = true;
       this.axios.get(`${this.api}accounts/loadAccounts`).then((res) => {
@@ -252,6 +262,7 @@ export default {
     },
     loadData() {
       this.loading = true;
+      this.refreshMonths();
       this.axios
         .get(
           `${this.api}monitoring/generateReport/${this.year}-01-01/${this.year}-12-31`

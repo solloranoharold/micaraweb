@@ -155,6 +155,8 @@ export default {
   methods: {
     loadMonitoring() {
       this.loading = true;
+
+      this.Transactions = [];
       this.axios
         .post(`${this.api}monitoring/loadTransaction`, {
           userInfo: this.userInfo,
