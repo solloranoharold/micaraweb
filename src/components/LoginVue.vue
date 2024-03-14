@@ -2,8 +2,6 @@
   <v-container fluid id="bg">
     <center>
       <v-flex md7>
-        <br /><br /><br /><br />
-
         <v-card style="border-radius: 50px" elevation="4">
           <h2 class="pa-2 text-center" style="text-decoration: underline">
             Visitor Monitoring System
