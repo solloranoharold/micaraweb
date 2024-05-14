@@ -129,23 +129,20 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
+
+        <v-list-item @click="dialog = !dialog">
+          <v-list-item-icon>
+            <v-icon>mdi-account-circle</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>MY ACCOUNT</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="logout()">
+          <v-list-item-icon>
+            <v-icon>mdi-power</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>LOGOUT</v-list-item-title>
+        </v-list-item>
       </v-list>
-      <template v-slot:append>
-        <v-list nav dense>
-          <v-list-item @click="dialog = !dialog">
-            <v-list-item-icon>
-              <v-icon>mdi-account-circle</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>MY ACCOUNT</v-list-item-title>
-          </v-list-item>
-          <v-list-item @click="logout()">
-            <v-list-item-icon>
-              <v-icon>mdi-power</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>LOGOUT</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </template>
     </v-navigation-drawer>
     <v-dialog
       v-model="dialog"
