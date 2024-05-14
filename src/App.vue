@@ -129,7 +129,12 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
-
+        <v-list-item to="/homeowner">
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Home</v-list-item-title>
+        </v-list-item>
         <v-list-item @click="dialog = !dialog">
           <v-list-item-icon>
             <v-icon>mdi-account-circle</v-icon>

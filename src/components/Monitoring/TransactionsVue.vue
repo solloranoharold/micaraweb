@@ -48,11 +48,7 @@
       </v-menu>
       <v-spacer />
       <v-btn
-        v-if="
-          (userInfo && editedIndex == -1) ||
-          (userInfo && userInfo.position == 'Home Owner') ||
-          !userInfo
-        "
+        v-if="(userInfo && userInfo.position == 'Home Owner') || !userInfo"
         @click="submitData()"
         dark
         rounded
@@ -201,7 +197,9 @@ export default {
     if (this.monitoring_data !== null) {
       console.log(this.monitoring_data, "qweqweq");
       this.addObj = JSON.parse(JSON.stringify(this.monitoring_data));
-
+      this.dateToday = this.moment(this.addObj.DateCreated).format(
+        "YYYY-MM-DD"
+      );
       this.editedIndex = 1;
     }
   },
@@ -269,10 +267,12 @@ export default {
         });
         return false;
       }
+      this.addObj.date_created = this.moment(this.dateToday).format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
       this.addObj.purpose =
         this.purpose != "Others" ? this.purpose : this.addObj.purpose;
       if (this.editedIndex == -1) {
-        this.addObj.date_created = this.dateToday;
         let i = this.Monitoring.findIndex(
           (x) =>
             x.user_id == this.addObj.user_id &&
@@ -297,6 +297,7 @@ export default {
       }
 
       this.addObj.index = this.editedIndex;
+
       this.Swal.fire({
         title: `Are you sure you want to ${
           this.editedIndex == -1 ? "create" : "update"
