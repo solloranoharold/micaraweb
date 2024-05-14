@@ -257,7 +257,6 @@ export default {
         !this.addObj.visitor_name ||
         !this.addObj.vehicle ||
         !this.addObj.plate_no ||
-        !this.addObj.purpose ||
         !this.purpose
       ) {
         this.Swal.fire({
