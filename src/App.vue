@@ -129,7 +129,7 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
-        <v-list-item to="/homeowner">
+        <v-list-item to="/homeowner" v-if="userInfo.position == 'Home Owner'">
           <v-list-item-icon>
             <v-icon>mdi-home</v-icon>
           </v-list-item-icon>
