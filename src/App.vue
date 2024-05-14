@@ -14,13 +14,14 @@
           contain
           src="./assets/img/micaraland-logo-final.png"
           transition="scale-transition"
-          width="150"
+          width="250"
         />
       </div>
       <v-spacer />
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
+            v-if="userInfo.position == 'Administrator'"
             icon
             dark
             v-bind="attrs"
@@ -33,39 +34,45 @@
         <span>ABOUT US</span>
       </v-tooltip>
     </v-app-bar>
-    <v-footer id="footer" inset width="auto" app dark padless v-if="!userInfo">
+    <v-footer id="footer" inset app dark padless v-if="!userInfo">
       <v-card flat tile class="cyan darken-4 flex text-center">
         <v-card-text>
-          <h4 class="pa-2 text-center" style="text-decoration: underline">
-            ABOUT US
-          </h4>
-          Micara Estates - Tanza is a 70 hectares property land developed by
-          Property of Friends Inc. situated along Antero Soriano Highway Brgy.
-          Sahud-Ulan Tanza, Cavite.
-          <h4 class="pa-2 text-center" style="text-decoration: underline">
-            CONTACT US
-          </h4>
-          Viber | Whatsapp | WeChat | IMO | Skype<br />
-          +63917-512-5471 (Globe) | +63998-978-9039 (Smart)
-          <br />
+          <v-row no-gutters>
+            <v-col md="6" lg="6">
+              <h4 class="pa-2 text-center" style="text-decoration: underline">
+                ABOUT US
+              </h4>
 
-          EMAIL US AT: micaracavite@gmail.com
-        </v-card-text>
-        <v-card-text class="white--text pt-0"></v-card-text>
-        <v-card-text class="white--text">
-          <v-btn
-            small
-            v-for="(icon, i) in icons"
-            :key="i"
-            class="mx-4 white--text"
-            text
-            @click="openLink(icon.link)"
-          >
-            <v-icon>
-              {{ icon.icon }}
-            </v-icon>
-            {{ icon.name }}
-          </v-btn>
+              Micara Estates - Tanza is a 70 hectares property land developed by
+              Property of Friends Inc. situated along Antero Soriano Highway
+              Brgy. Sahud-Ulan Tanza, Cavite.
+            </v-col>
+            <v-col md="6" lg="6">
+              <h4 class="pa-2 text-center" style="text-decoration: underline">
+                CONTACT US
+              </h4>
+              Viber | Whatsapp | WeChat | IMO | Skype<br />
+              +63917-512-5471 (Globe) | +63998-978-9039 (Smart)
+              <br />
+
+              EMAIL US AT: micaracavite@gmail.com
+            </v-col>
+            <v-col md="12" lg="12">
+              <v-btn
+                small
+                v-for="(icon, i) in icons"
+                :key="i"
+                class="mx-4 white--text"
+                text
+                @click="openLink(icon.link)"
+              >
+                <v-icon>
+                  {{ icon.icon }}
+                </v-icon>
+                {{ icon.name }}
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-card-text>
       </v-card>
     </v-footer>
@@ -123,6 +130,22 @@
           </v-list-item>
         </v-list-item-group>
       </v-list>
+      <template v-slot:append>
+        <v-list nav dense>
+          <v-list-item @click="dialog = !dialog">
+            <v-list-item-icon>
+              <v-icon>mdi-account-circle</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>MY ACCOUNT</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="logout()">
+            <v-list-item-icon>
+              <v-icon>mdi-power</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>LOGOUT</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </template>
     </v-navigation-drawer>
     <v-dialog
       v-model="dialog"
@@ -269,14 +292,14 @@
       </v-card>
     </v-dialog>
     <v-main>
-      <v-toolbar flat dense v-if="userInfo != null && isShow == false">
+      <!-- <v-toolbar flat dense v-if="userInfo != null && isShow == false">
         <v-btn x-small dark color="teal darken-2" @click="dialog = !dialog">
           <v-icon>mdi-account-circle</v-icon>My Account
         </v-btn>
         <v-btn x-small dark color="teal darken-2" @click="logout()">
           <v-icon>mdi-power</v-icon>Logout
         </v-btn>
-      </v-toolbar>
+      </v-toolbar> -->
       <router-view />
     </v-main>
   </v-app>

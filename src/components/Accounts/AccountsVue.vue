@@ -63,7 +63,7 @@
 
           <v-spacer />
           <v-btn @click="openDialog()" rounded dark small class="teal darken-2"
-            ><v-icon>mdi-account-plus</v-icon>Create Account</v-btn
+            ><v-icon>mdi-account-plus</v-icon>Add Account</v-btn
           >
         </v-toolbar>
       </template>

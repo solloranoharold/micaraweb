@@ -1,79 +1,79 @@
 <template>
   <v-container fluid id="bg">
-    <center>
-      <v-flex md7>
-        <v-card style="border-radius: 50px" elevation="4">
-          <h2 class="pa-2 text-center" style="text-decoration: underline">
-            Visitor Monitoring System
-          </h2>
-          <v-divider />
-          <v-row no-gutters v-if="!loading">
-            <v-col md="6" xs="12" sm="12" lg="6">
-              <v-img width="40%" src="micaraland-logo-final.png"> </v-img>
-              <center>Scan this for visitors</center>
-              <v-img width="35%" src="../assets/img/qrcode.png"> </v-img>
-            </v-col>
-            <v-col>
-              <center>
-                <v-card-text>
-                  <br />
-                  <h2 class="text-center" style="text-decoration: underline">
-                    Login
-                  </h2>
-                  <v-divider />
-                  <br />
+    <div class="login">
+      <center>
+        <v-flex md7>
+          <v-card style="border-radius: 50px" elevation="4">
+            <h2 class="pa-2 text-center" style="text-decoration: underline">
+              Visitor Monitoring System
+            </h2>
+            <v-divider />
+            <v-row no-gutters v-if="!loading">
+              <v-col md="6" xs="12" sm="12" lg="6">
+                <v-img width="40%" src="micaraland-logo-final.png"> </v-img>
+                <center>Scan this for visitors</center>
+                <v-img width="35%" src="../assets/img/qrcode.png"> </v-img>
+              </v-col>
+              <v-col>
+                <center>
+                  <v-card-text>
+                    <br />
+                    <h2 class="text-center" style="text-decoration: underline">
+                      Login
+                    </h2>
+                    <v-divider />
+                    <br />
 
-                  <v-text-field
-                    dense
-                    prepend-inner-icon="mdi-account"
-                    color="#33691E"
-                    v-model="username"
-                    rounded
-                    outlined
-                    label="Username"
-                  ></v-text-field>
-                  <v-text-field
-                    dense
-                    prepend-inner-icon="mdi-key"
-                    color="#33691E"
-                    v-model="password"
-                    type="password"
-                    rounded
-                    outlined
-                    @keypress.enter="loginAccount()"
-                    label="Password"
-                  ></v-text-field>
-                  <v-card-actions>
-                    <v-spacer />
-                    <v-btn
-                      dark
+                    <v-text-field
+                      dense
+                      prepend-inner-icon="mdi-account"
                       color="#33691E"
+                      v-model="username"
                       rounded
                       outlined
-                      small
-                      @click="openDialog()"
-                    >
-                      <v-icon>mdi-account-plus</v-icon>
-                      Sign Up
-                    </v-btn>
-                    <v-btn
-                      dark
+                      label="Username"
+                    ></v-text-field>
+                    <v-text-field
+                      dense
+                      prepend-inner-icon="mdi-key"
                       color="#33691E"
+                      v-model="password"
+                      type="password"
                       rounded
                       outlined
-                      small
-                      @click="loginAccount()"
-                      ><v-icon>mdi-login</v-icon>login</v-btn
-                    >
-                  </v-card-actions>
-                </v-card-text>
-              </center>
-            </v-col>
-          </v-row>
-          <loading-view-vue v-else />
-        </v-card>
-      </v-flex>
-    </center>
+                      @keypress.enter="loginAccount()"
+                      label="Password"
+                    ></v-text-field>
+                    <v-card-actions>
+                      <v-spacer />
+                      <v-btn
+                        dark
+                        color="#33691E"
+                        rounded
+                        outlined
+                        @click="openDialog()"
+                      >
+                        <v-icon>mdi-account-plus</v-icon>
+                        Sign Up
+                      </v-btn>
+                      <v-btn
+                        dark
+                        color="#33691E"
+                        rounded
+                        outlined
+                        @click="loginAccount()"
+                        ><v-icon>mdi-login</v-icon>login</v-btn
+                      >
+                    </v-card-actions>
+                  </v-card-text>
+                </center>
+              </v-col>
+            </v-row>
+            <loading-view-vue v-else />
+          </v-card>
+        </v-flex>
+      </center>
+    </div>
     <v-dialog v-model="dialog" persistent scrollable max-width="700">
       <v-card>
         <v-toolbar dark flat dense color="teal darken-2">
@@ -508,6 +508,13 @@ export default {
 </script>
 
 <style>
+.login {
+  position: fixed;
+  inset: 0;
+  /* width: fit-content; */
+  height: fit-content;
+  margin: auto;
+}
 #bg {
   background: url("../assets/img/bg1.jpg");
   background-repeat: no-repeat;

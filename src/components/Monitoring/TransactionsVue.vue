@@ -1,28 +1,80 @@
 <template>
   <v-container fluid v-if="!loading">
-    <v-toolbar flat dense dark color="teal accent-4">
+    <!-- <v-toolbar flat dense dark color="teal accent-4">
       <v-toolbar-title
         ><v-icon x-large>mdi-list-box-outline</v-icon>Visitor's
         Form</v-toolbar-title
       >
-    </v-toolbar>
+    </v-toolbar> -->
     <br />
-    <v-flex md6 lg6 sm12 xs12>
-      <v-text-field
-        dense
-        color="teal accent-4"
+    <v-toolbar flat>
+      <!-- <v-flex md6 lg6 sm12 xs12>
+        <v-text-field
+          dense
+          color="teal accent-4"
+          rounded
+          outlined
+          readonly
+          label="Date Today"
+          prepend-inner-icon="mdi-calendar"
+          v-model="dateToday"
+        ></v-text-field>
+      </v-flex> -->
+      <v-menu
+        v-model="menu"
+        :close-on-content-click="false"
+        :nudge-right="40"
+        transition="scale-transition"
+        offset-y
+        min-width="auto"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            v-model="dateToday"
+            rounded
+            dense
+            outlined
+            label="Filter Date"
+            prepend-inner-icon="mdi-calendar"
+            readonly
+            v-bind="attrs"
+            v-on="on"
+          ></v-text-field>
+        </template>
+        <v-date-picker v-model="dateToday">
+          <v-spacer></v-spacer>
+          <v-btn text color="primary" @click="menu = false"> Ok </v-btn>
+        </v-date-picker>
+      </v-menu>
+      <v-spacer />
+      <v-btn
+        v-if="
+          (userInfo && editedIndex == -1) ||
+          (userInfo && userInfo.position == 'Home Owner') ||
+          !userInfo
+        "
+        @click="submitData()"
+        dark
         rounded
-        outlined
-        readonly
-        label="Date Today"
-        prepend-inner-icon="mdi-calendar"
-        v-model="dateToday"
-      ></v-text-field>
-    </v-flex>
+        color="teal darken-4"
+        >SUBMIT</v-btn
+      >
+      <v-btn
+        v-else
+        @click="proceedMonitoring()"
+        dark
+        small
+        rounded
+        color="teal darken-4"
+      >
+        <v-icon>mdi-arrow-left</v-icon> Proceed to Monitoring
+      </v-btn>
+    </v-toolbar>
+
     <v-row>
       <v-col cols="12" md="6" lg="6" sm="12" xs="12">
         <v-card ref="form" elevation="6">
-          <h2 class="text-center">Home Owner's Information</h2>
+          <h2 class="text-center">Home Owners Information</h2>
           <v-divider style="border: 1px solid" />
           <v-card-text>
             <v-autocomplete
@@ -61,7 +113,7 @@
       </v-col>
       <v-col cols="12" md="6" lg="6" sm="12" xs="12">
         <v-card ref="form" elevation="6">
-          <h2 class="text-center">Visitor's Information</h2>
+          <h2 class="text-center">Visitors Information</h2>
           <v-divider style="border: 1px solid" />
           <v-card-text>
             <v-text-field
@@ -94,43 +146,36 @@
               outlined
               required
             ></v-text-field>
+            <v-autocomplete
+              color="teal accent-4"
+              label="Purpose of Visit"
+              dense
+              :items="[
+                'For Holidays',
+                'Spend Time with Family/Friends',
+                'Celebration',
+                'Others',
+              ]"
+              v-model="purpose"
+              rounded
+              outlined
+              required
+            ></v-autocomplete>
             <v-textarea
+              v-if="purpose == 'Others'"
               color="teal accent-4"
               label="Purpose of Visit"
               dense
               v-model="addObj.purpose"
               rounded
               outlined
-              required
+              :required="purpose == 'Others'"
             ></v-textarea>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
     <br />
-    <v-btn
-      v-if="
-        (userInfo && editedIndex == -1) ||
-        (userInfo && userInfo.position == 'Home Owner') ||
-        !userInfo
-      "
-      @click="submitData()"
-      dark
-      block
-      rounded
-      color="teal darken-4"
-      >SUBMIT</v-btn
-    >
-    <v-btn
-      v-else
-      @click="proceedMonitoring()"
-      dark
-      small
-      rounded
-      color="teal darken-4"
-    >
-      <v-icon>mdi-arrow-left</v-icon> Proceed to Monitoring
-    </v-btn>
   </v-container>
   <loading-view v-else />
 </template>
@@ -146,6 +191,8 @@ export default {
     addObj: {},
     editedIndex: -1,
     Monitoring: [],
+    purpose: "",
+    menu: false,
   }),
   created() {
     this.loadMonitoring();
@@ -210,7 +257,8 @@ export default {
         !this.addObj.visitor_name ||
         !this.addObj.vehicle ||
         !this.addObj.plate_no ||
-        !this.addObj.purpose
+        !this.addObj.purpose ||
+        !this.purpose
       ) {
         this.Swal.fire({
           position: "top-end",
@@ -222,6 +270,8 @@ export default {
         });
         return false;
       }
+      this.addObj.purpose =
+        this.purpose != "Others" ? this.purpose : this.addObj.purpose;
       if (this.editedIndex == -1) {
         let i = this.Monitoring.findIndex(
           (x) =>
