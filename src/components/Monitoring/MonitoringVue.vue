@@ -201,6 +201,9 @@ export default {
           this.loading = true;
           item.checkedBy = this.userInfo.user_id;
           item.date_arrival = this.moment().format("YYYY-MM-DD HH:mm:ss");
+          item.date_created = this.moment(item.date_created).format(
+            "YYYY-MM-DD HH:mm:ss"
+          );
           this.axios
             .post(`${this.api}monitoring/insertUpdateRequest`, item)
             .then((res) => {
@@ -222,6 +225,9 @@ export default {
     addDeparture(item) {
       item.index = 1;
       item.date_arrival = this.moment(item.date_arrival).format(
+        "YYYY-MM-DD HH:mm:ss"
+      );
+      item.date_created = this.moment(item.date_created).format(
         "YYYY-MM-DD HH:mm:ss"
       );
       this.Swal.fire({
