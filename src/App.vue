@@ -479,7 +479,7 @@ export default {
         setTimeout(() => {
           this.$store.commit("STORE_USERINFO", null);
           this.$router.push("/login");
-          alert("YOU ARE NOW LOGOUT");
+          alert("YOU ARE NOW LOGGED OUT");
         }, 1000);
       }
     },
