@@ -272,6 +272,7 @@ export default {
       this.addObj.purpose =
         this.purpose != "Others" ? this.purpose : this.addObj.purpose;
       if (this.editedIndex == -1) {
+        this.addObj.date_created = this.dateToday;
         let i = this.Monitoring.findIndex(
           (x) =>
             x.user_id == this.addObj.user_id &&
