@@ -48,7 +48,12 @@
       </v-menu>
       <v-spacer />
       <v-btn
-        v-if="(userInfo && userInfo.position == 'Home Owner') || !userInfo"
+        v-if="
+          (userInfo &&
+            (userInfo.position == 'Home Owner' ||
+              userInfo.position == 'Administrator')) ||
+          !userInfo
+        "
         @click="submitData()"
         dark
         rounded

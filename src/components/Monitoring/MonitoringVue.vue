@@ -201,7 +201,7 @@ export default {
           this.loading = true;
           item.checkedBy = this.userInfo.user_id;
           item.date_arrival = this.moment().format("YYYY-MM-DD HH:mm:ss");
-          item.date_created = this.moment(item.date_created).format(
+          item.date_created = this.moment(item.DateCreated).format(
             "YYYY-MM-DD HH:mm:ss"
           );
           this.axios
@@ -223,11 +223,20 @@ export default {
       });
     },
     addDeparture(item) {
+      if (!item.date_arrival) {
+        this.Swal.fire({
+          position: "bottom-end",
+          toast: true,
+          icon: "error",
+          title: "No Date Arrival!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        return false;
+      }
       item.index = 1;
-      item.date_arrival = this.moment(item.date_arrival).format(
-        "YYYY-MM-DD HH:mm:ss"
-      );
-      item.date_created = this.moment(item.date_created).format(
+      item.date_departure = this.moment().format("YYYY-MM-DD HH:mm:ss");
+      item.date_created = this.moment(item.DateCreated).format(
         "YYYY-MM-DD HH:mm:ss"
       );
       this.Swal.fire({
@@ -241,6 +250,9 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           item.checkedBy = this.userInfo.user_id;
+          item.date_arrival = this.moment(item.date_arrival).format(
+            "YYYY-MM-DD HH:mm:ss"
+          );
           item.date_departure = this.moment().format("YYYY-MM-DD HH:mm:ss");
           this.loading = true;
           this.axios
