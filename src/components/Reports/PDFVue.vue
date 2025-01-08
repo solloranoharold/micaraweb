@@ -24,8 +24,8 @@
           <td>{{ data.vehicle }}</td>
           <td>{{ data.plate_no }}</td>
           <td>{{ data.purpose }}</td>
-          <td>{{ data.date_arrival }}</td>
-          <td>{{ data.date_departure }}</td>
+          <td>{{ data.date_arrival ? data.date_arrival : '00:00:00'  }}</td>
+          <td>{{ data.date_departure ? data.date_departure  : '00:00:00'}}</td>
           <td>{{ data.checker }}</td>
           <td>{{ data.DateCreated }}</td>
         </tr>
@@ -73,15 +73,15 @@ export default {
               ["DateCreated"],
               ["desc"]
             ).filter((rec) => {
-              rec.date_arrival = this.moment(rec.date_arrival).format(
+              rec.date_arrival = rec.date_arrival ? this.moment(rec.date_arrival).format(
                 "YYYY-MM-DD HH:mm:ss A"
-              );
+              ) : '00:00:00';
               rec.checker = rec.checker ? rec.checker : "";
-              rec.date_departure = rec.date_departure
+              rec.date_departure = rec.date_departure ? rec.date_departure
                 ? this.moment(rec.date_departure).format(
-                    "YYYY-MM-DD HH:mm:ss A"
-                  )
-                : "";
+                  "YYYY-MM-DD HH:mm:ss A"
+                )
+                : "" : '00:00:00';
               rec.DateCreated = this.moment(rec.DateCreated).format(
                 "YYYY-MM-DD HH:mm:ss"
               );

@@ -1,71 +1,51 @@
 <template>
   <v-app>
-    <v-app-bar
-      v-if="isHide == false && userInfo != null && isShow == false"
-      app
-      dark
-      class="teal accent-4"
-    >
+    <v-app-bar v-if="isHide == false && userInfo != null && isShow == false" app dark class="teal accent-4">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-5"
-          contain
-          src="./assets/img/micaraland-logo-final.png"
-          transition="scale-transition"
-          width="250"
-        />
+        <v-img alt="Vuetify Logo" class="shrink mr-5" contain src="./assets/img/micaraland-logo-final.png"
+          transition="scale-transition" width="250" />
       </div>
       <v-spacer />
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            v-if="userInfo.position == 'Administrator'"
-            icon
-            dark
-            v-bind="attrs"
-            v-on="on"
-            @click="$router.push('/about')"
-          >
+          <v-btn v-if="userInfo.position == 'Administrator'" icon dark v-bind="attrs" v-on="on"
+            @click="$router.push('/about')">
             <v-icon x-large>mdi-information</v-icon>
           </v-btn>
         </template>
         <span>ABOUT US</span>
       </v-tooltip>
     </v-app-bar>
-    <v-footer id="footer" inset app dark padless v-if="!userInfo">
+    <v-footer id="footer" inset app dark padless v-if="!userInfo"
+      :style="{ 'padding': 0, 'height': uiHeight,'overflow': 'auto'}">
       <v-card flat tile class="cyan darken-4 flex text-center">
         <v-card-text>
           <v-row no-gutters>
-            <v-col md="6" lg="6">
-              <h4 class="pa-2 text-center" style="text-decoration: underline">
+            <v-col md="6" lg="6" style="font-size: 12px;">
+              <h4 class="pa-2 text-center" style="text-decoration: underline;">
                 ABOUT US
               </h4>
 
-              Micara Estates - Tanza is a 70 hectares property land developed by
-              Property of Friends Inc. situated along Antero Soriano Highway
-              Brgy. Sahud-Ulan Tanza, Cavite.
+              <p style="font-size: 11px;">
+                Micara Estates - Tanza is a 70 hectares property land developed by
+                Property of Friends Inc. situated along Antero Soriano Highway
+                Brgy. Sahud-Ulan Tanza, Cavite.
+              </p>
             </v-col>
-            <v-col md="6" lg="6">
+            <v-col md="6" lg="6" style="font-size: 12px;">
               <h4 class="pa-2 text-center" style="text-decoration: underline">
                 CONTACT US
               </h4>
-              Viber | Whatsapp | WeChat | IMO | Skype<br />
-              +63917-512-5471 (Globe) | +63998-978-9039 (Smart)
-              <br />
-
+              <p style="font-size: 11px;">
+                Viber | Whatsapp | WeChat | IMO | Skype<br />
+                +63917-512-5471 (Globe) | +63998-978-9039 (Smart)
+              </p>
               EMAIL US AT: micaracavite@gmail.com
             </v-col>
             <v-col md="12" lg="12">
-              <v-btn
-                small
-                v-for="(icon, i) in icons"
-                :key="i"
-                class="mx-4 white--text"
-                text
-                @click="openLink(icon.link)"
-              >
+              <v-btn small v-for="(icon, i) in icons" :key="i" class="mx-4 white--text" text
+                @click="openLink(icon.link)">
                 <v-icon>
                   {{ icon.icon }}
                 </v-icon>
@@ -77,25 +57,15 @@
       </v-card>
     </v-footer>
     <!-- NAVBAR -->
-    <v-navigation-drawer
-      v-if="userInfo != null && isShow == false"
-      v-model="drawer"
-      app
-      width="250"
-    >
+    <v-navigation-drawer v-if="userInfo != null && isShow == false" v-model="drawer" app width="250">
       <div class="d-flex align-center">
-        <v-img
-          aspect-ratio="1"
-          alt="Profile"
-          :src="`${ftp}users/${userInfo.profile_img}`"
-        ></v-img>
+        <v-img aspect-ratio="1" alt="Profile" :src="`${ftp}users/${userInfo.profile_img}`"></v-img>
       </div>
       <v-list>
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title class="text-h6">
-              {{ userInfo.fullname }}</v-list-item-title
-            >
+              {{ userInfo.fullname }}</v-list-item-title>
             <v-list-item-subtitle>{{ userInfo.position }}</v-list-item-subtitle>
           </v-list-item-content>
 
@@ -107,10 +77,8 @@
 
       <v-divider></v-divider>
       <v-list nav dense>
-        <v-list-item-group
-          active-class="teal accent-2 --text text--accent-2"
-          v-if="userInfo.position == 'Administrator'"
-        >
+        <v-list-item-group active-class="teal accent-2 --text text--accent-2"
+          v-if="userInfo.position == 'Administrator'">
           <v-list-item v-for="(item, i) in admin" :key="i" :to="item.to">
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
@@ -118,10 +86,8 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item>
         </v-list-item-group>
-        <v-list-item-group
-          active-class="teal accent-2 --text text--accent-2"
-          v-if="userInfo.position == 'Security Guard'"
-        >
+        <v-list-item-group active-class="teal accent-2 --text text--accent-2"
+          v-if="userInfo.position == 'Security Guard'">
           <v-list-item v-for="(item, i) in guard" :key="i" :to="item.to">
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
@@ -139,23 +105,17 @@
           <v-list-item-icon>
             <v-icon>mdi-account-circle</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>MY ACCOUNT</v-list-item-title>
+          <v-list-item-title>My Account</v-list-item-title>
         </v-list-item>
         <v-list-item @click="logout()">
           <v-list-item-icon>
             <v-icon>mdi-power</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>LOGOUT</v-list-item-title>
+          <v-list-item-title>Logout</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-dialog
-      v-model="dialog"
-      scrollable
-      max-width="500px"
-      persistent
-      v-if="userInfo"
-    >
+    <v-dialog v-model="dialog" scrollable max-width="500px" persistent v-if="userInfo">
       <v-card>
         <v-toolbar flat dense dark color="teal accent-4">
           <v-toolbar-title>My Account</v-toolbar-title>
@@ -164,131 +124,57 @@
         </v-toolbar>
         <v-card-text>
           <v-container>
-            <v-btn
-              dark
-              color="teal darken-4"
-              dense
-              x-small
-              @click="type = 'info'"
-              ><v-icon small>mdi-account</v-icon>Information</v-btn
-            >
-            <v-btn
-              dense
-              dark
-              color="teal darken-4"
-              x-small
-              @click="type = 'password'"
-              ><v-icon small>mdi-account</v-icon>Change Password</v-btn
-            >
+            <v-btn dark color="teal darken-4" dense x-small @click="type = 'info'"><v-icon
+                small>mdi-account</v-icon>Information</v-btn>
+            <v-btn dense dark color="teal darken-4" x-small @click="type = 'password'"><v-icon
+                small>mdi-account</v-icon>Change Password</v-btn>
             <br /><br />
             <div v-if="type == 'info'">
               <v-row>
                 <v-col>
-                  <input
-                    type="file"
-                    dense
-                    outlined
-                    rounded
-                    accept="image/*"
-                    label="Upload Image"
-                    @change="onFileChange($event)"
-                  />
-                  <v-img
-                    aspect-ration="2"
-                    :src="img ? img : `${ftp}users/${userInfo.profile_img}`"
-                  />
+                  <input type="file" dense outlined rounded accept="image/*" label="Upload Image"
+                    @change="onFileChange($event)" />
+                  <v-img aspect-ration="2" :src="img ? img : `${ftp}users/${userInfo.profile_img}`" />
                 </v-col>
                 <v-col cols="12">
-                  <v-text-field
-                    dense
-                    v-model="userInfo.fullname"
-                    rounded
-                    outlined
-                    label="Fullname"
-                  ></v-text-field>
+                  <v-text-field dense v-model="userInfo.firstname" rounded outlined label="Firstname"></v-text-field>
                 </v-col>
                 <v-col cols="12">
-                  <v-autocomplete
-                    v-model="userInfo.position_id"
-                    :items="Positions"
-                    readonly
-                    item-text="position"
-                    item-value="position_id"
-                    dense
-                    rounded
-                    outlined
-                    label="Position"
-                    append-icon="mdi-note"
-                  ></v-autocomplete>
+                  <v-text-field dense v-model="userInfo.lastname" rounded outlined label="Lastname"></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-autocomplete v-model="userInfo.position_id" :items="Positions" readonly item-text="position"
+                    item-value="position_id" dense rounded outlined label="Position"
+                    append-icon="mdi-note"></v-autocomplete>
                 </v-col>
                 <v-col>
-                  <v-text-field
-                    dense
-                    v-model="userInfo.age"
-                    rounded
-                    type="number"
-                    min="1"
-                    outlined
-                    label="Age"
-                  ></v-text-field>
+                  <v-autocomplete v-model="userInfo.gender" :items="['M', 'F']" dense rounded outlined
+                    label="Gender"></v-autocomplete>
                 </v-col>
-                <v-col>
-                  <v-autocomplete
-                    v-model="userInfo.gender"
-                    :items="['M', 'F']"
-                    dense
-                    rounded
-                    outlined
-                    label="Gender"
-                  ></v-autocomplete>
+                <v-col cols="6">
+                  <v-text-field v-model="userInfo.phase" dense rounded outlined label="Phase"></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field v-model="userInfo.block" dense rounded outlined label="Block"></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field v-model="userInfo.lot" dense rounded outlined label="Lot"></v-text-field>
+                </v-col>
+                <v-col cols="6">
+                  <v-text-field v-model="userInfo.street" dense rounded outlined label="Street"></v-text-field>
                 </v-col>
                 <v-col cols="12">
-                  <v-textarea
-                    v-model="userInfo.address"
-                    dense
-                    rounded
-                    outlined
-                    label="Blk/Lot/Street/City"
-                  ></v-textarea>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    v-model="userInfo.contactno"
-                    dense
-                    rounded
-                    outlined
-                    label="Contact No"
-                  ></v-text-field>
+                  <v-text-field v-model="userInfo.contactno" dense rounded outlined label="Contact No"></v-text-field>
                 </v-col>
               </v-row>
             </div>
             <div v-else-if="type == 'password'">
-              <v-text-field
-                dense
-                rounded
-                outlined
-                v-model="changePass.password"
-                label="New Password"
-                type="password"
-              ></v-text-field>
-              <v-text-field
-                dense
-                rounded
-                outlined
-                type="password"
-                v-model="changePass.cpass"
-                label="Confirm Password"
-              ></v-text-field>
+              <v-text-field dense rounded outlined v-model="changePass.password" label="New Password"
+                type="password"></v-text-field>
+              <v-text-field dense rounded outlined type="password" v-model="changePass.cpass"
+                label="Confirm Password"></v-text-field>
             </div>
-            <v-btn
-              v-if="type"
-              block
-              dark
-              color="teal darken-4"
-              small
-              @click="updateAccount()"
-              >UPDATE</v-btn
-            >
+            <v-btn v-if="type" block dark color="teal darken-4" small @click="updateAccount()">UPDATE</v-btn>
           </v-container>
         </v-card-text>
       </v-card>
@@ -335,7 +221,7 @@ export default {
     drawer: true,
     dialog: false,
     admin: [
-      { title: "Home", icon: "mdi-home", to: "/" },
+      { title: "HOME", icon: "mdi-home", to: "/" },
       { title: "Accounts", icon: "mdi-account-cog", to: "/accounts" },
       {
         title: "Monitoring Dashboard",
@@ -355,10 +241,16 @@ export default {
         to: "/monitoring",
       },
     ],
+    uiHeight:''
   }),
   created() {
+    this.updateWindowSize()
     // this.$store.commit("STORE_DATA", this.temp);
     this.loadPositions();
+  },
+  mounted() {
+
+    window.addEventListener("resize", this.updateWindowSize);
   },
   methods: {
     openLink(link) {
@@ -485,6 +377,13 @@ export default {
         }, 1000);
       }
     },
+    updateWindowSize() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      let heightValue = height < 550 ? 460 : height
+      this.uiHeight = (heightValue == 460 ? ( height - heightValue) : 100)    +'px'
+      console.log('width', width + 'px', 'height', height + 'px')
+    },
   },
 };
 </script>
@@ -497,5 +396,25 @@ export default {
   #footer {
     display: none;
   }
+}
+::-webkit-scrollbar {
+  width: 12px;
+  /* Width of the scrollbar */
+}
+::-webkit-scrollbar-track {
+  background-color: rgb(4, 72, 88);
+  /* Light gray track */
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #068db6;
+  /* Blue thumb color */
+  border-radius: 10px;
+  border: 3px solid #068db6;
+  /* White border around thumb */
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #0056b3;
+  /* Darker blue on hover */
 }
 </style>

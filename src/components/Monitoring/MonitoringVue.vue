@@ -250,9 +250,6 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           item.checkedBy = this.userInfo.user_id;
-          item.date_arrival = this.moment(item.date_arrival).format(
-            "YYYY-MM-DD HH:mm:ss"
-          );
           item.date_departure = this.moment().format("YYYY-MM-DD HH:mm:ss");
           this.loading = true;
           this.axios

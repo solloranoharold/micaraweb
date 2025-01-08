@@ -24,46 +24,18 @@
                     <v-divider />
                     <br />
 
-                    <v-text-field
-                      dense
-                      prepend-inner-icon="mdi-account"
-                      color="#33691E"
-                      v-model="username"
-                      rounded
-                      outlined
-                      label="Username"
-                    ></v-text-field>
-                    <v-text-field
-                      dense
-                      prepend-inner-icon="mdi-key"
-                      color="#33691E"
-                      v-model="password"
-                      type="password"
-                      rounded
-                      outlined
-                      @keypress.enter="loginAccount()"
-                      label="Password"
-                    ></v-text-field>
+                    <v-text-field dense prepend-inner-icon="mdi-account" color="#33691E" v-model="username" rounded
+                      outlined label="Username"></v-text-field>
+                    <v-text-field dense prepend-inner-icon="mdi-key" color="#33691E" v-model="password" type="password"
+                      rounded outlined @keypress.enter="loginAccount()" label="Password"></v-text-field>
                     <v-card-actions>
                       <v-spacer />
-                      <v-btn
-                        dark
-                        color="#33691E"
-                        rounded
-                        outlined
-                        @click="openDialog()"
-                      >
+                      <v-btn dark color="#33691E" rounded outlined @click="openDialog()">
                         <v-icon>mdi-account-plus</v-icon>
                         Sign Up
                       </v-btn>
-                      <v-btn
-                        dark
-                        color="#33691E"
-                        rounded
-                        outlined
-                        @click="loginAccount()"
-                        ><v-icon>mdi-login</v-icon>login</v-btn
-                      >
+                      <v-btn dark color="#33691E" rounded outlined
+                        @click="loginAccount()"><v-icon>mdi-login</v-icon>login</v-btn>
                     </v-card-actions>
                   </v-card-text>
                 </center>
@@ -77,12 +49,10 @@
     <v-dialog v-model="dialog" persistent scrollable max-width="700">
       <v-card>
         <v-toolbar dark flat dense color="teal darken-2">
-          <v-toolbar-title
-            >{{
-              editedIndex == -1 ? "Create " : "Update"
+          <v-toolbar-title>{{
+            editedIndex == -1 ? "Create " : "Update"
             }}
-            Account</v-toolbar-title
-          >
+            Account</v-toolbar-title>
           <v-spacer />
           <v-icon @click="closeDialog()">mdi-close</v-icon>
         </v-toolbar>
@@ -106,87 +76,47 @@
                   <v-card-text>
                     <v-row>
                       <v-col>
-                        <input
-                          type="file"
-                          dense
-                          outlined
-                          rounded
-                          accept="image/*"
-                          label="Upload Image"
-                          @change="onFileChange($event)"
-                        />
+                        <input type="file" dense outlined rounded accept="image/*" label="Upload Image"
+                          @change="onFileChange($event)" />
                         <v-img aspect-ration="2" :src="img" />
                       </v-col>
                       <v-col cols="12">
-                        <v-text-field
-                          dense
-                          v-model="addObj.fullname"
-                          rounded
-                          outlined
-                          label="Fullname"
-                        ></v-text-field>
+                        <v-text-field dense v-model="addObj.firstname" rounded outlined
+                          label="Firstname"></v-text-field>
                       </v-col>
                       <v-col cols="12">
-                        <v-autocomplete
-                          v-model="addObj.position_id"
-                          :items="Positions"
-                          item-text="position"
-                          item-value="position_id"
-                          dense
-                          rounded
-                          outlined
-                          label="Position"
-                        ></v-autocomplete>
+                        <v-text-field dense v-model="addObj.lastname" rounded outlined label="Lastname"></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-autocomplete v-model="addObj.position_id" :items="Positions" item-text="position"
+                          item-value="position_id" dense rounded outlined label="Position"></v-autocomplete>
+                      </v-col>
+
+                      <v-col cols="6">
+                        <v-text-field v-model="addObj.phase" dense rounded outlined label="Phase"></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field v-model="addObj.block" dense rounded outlined label="Block"></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field v-model="addObj.lot" dense rounded outlined label="Lot"></v-text-field>
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field v-model="addObj.street" dense rounded outlined label="Street"></v-text-field>
                       </v-col>
                       <v-col>
-                        <v-text-field
-                          dense
-                          v-model="addObj.age"
-                          rounded
-                          type="number"
-                          min="1"
-                          outlined
-                          label="Age"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col>
-                        <v-autocomplete
-                          v-model="addObj.gender"
-                          :items="['M', 'F']"
-                          dense
-                          rounded
-                          outlined
-                          label="Gender"
-                        ></v-autocomplete>
+                        <v-autocomplete v-model="addObj.gender" :items="['M', 'F']" dense rounded outlined
+                          label="Gender"></v-autocomplete>
                       </v-col>
                       <v-col cols="12">
-                        <v-textarea
-                          v-model="addObj.address"
-                          dense
-                          rounded
-                          outlined
-                          label="Blk/Lot/Street/City"
-                        ></v-textarea>
-                      </v-col>
-                      <v-col cols="12">
-                        <v-text-field
-                          v-model="addObj.contactno"
-                          dense
-                          rounded
-                          outlined
-                          label="Contact No"
-                        ></v-text-field>
+                        <v-text-field v-model="addObj.contactno" dense rounded outlined
+                          label="Contact No"></v-text-field>
                       </v-col>
                     </v-row>
                   </v-card-text>
                 </v-card>
 
-                <v-btn
-                  small
-                  dark
-                  color="teal darken-2"
-                  @click="proceedStepper(2)"
-                >
+                <v-btn small dark color="teal darken-2" @click="proceedStepper(2)">
                   Continue
                 </v-btn>
 
@@ -196,38 +126,13 @@
               </v-stepper-content>
 
               <v-stepper-content step="2">
-                <v-text-field
-                  dense
-                  :disabled="editedIndex > -1"
-                  v-model="addObj.username"
-                  rounded
-                  outlined
-                  label="Username"
-                ></v-text-field>
-                <v-text-field
-                  dense
-                  :disabled="editedIndex > -1"
-                  v-model="addObj.password"
-                  rounded
-                  type="password"
-                  outlined
-                  label="Password"
-                ></v-text-field>
-                <v-text-field
-                  v-if="editedIndex == -1"
-                  dense
-                  v-model="addObj.cpass"
-                  rounded
-                  type="password"
-                  outlined
-                  label="Confirm Passwor"
-                ></v-text-field>
-                <v-btn
-                  small
-                  dark
-                  color="teal darken-2"
-                  @click="proceedStepper(3)"
-                >
+                <v-text-field dense :disabled="editedIndex > -1" v-model="addObj.username" rounded outlined
+                  label="Username"></v-text-field>
+                <v-text-field dense :disabled="editedIndex > -1" v-model="addObj.password" rounded type="password"
+                  outlined label="Password"></v-text-field>
+                <v-text-field v-if="editedIndex == -1" dense v-model="addObj.cpass" rounded type="password" outlined
+                  label="Confirm Passwor"></v-text-field>
+                <v-btn small dark color="teal darken-2" @click="proceedStepper(3)">
                   Continue
                 </v-btn>
 
@@ -381,12 +286,16 @@ export default {
       this.e1 = 1;
     },
     proceedStepper(i) {
+      console.log(this.addObj)
       if (
-        !this.addObj.fullname ||
+        !this.addObj.firstname ||
+        !this.addObj.lastname ||
         !this.addObj.position_id ||
-        !this.addObj.age ||
         !this.addObj.gender ||
-        !this.addObj.address ||
+        !this.addObj.phase ||
+        !this.addObj.block ||
+        !this.addObj.lot ||
+        !this.addObj.street ||
         !this.addObj.contactno
       ) {
         this.Swal.fire({

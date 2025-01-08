@@ -77,13 +77,7 @@
               rounded
               class="teal darken-2"
               @click="
-                $router.push({
-                  name: 'PDFVue',
-                  params: {
-                    date1: date1,
-                    date2: date2,
-                  },
-                })
+               generatePDF()
               "
               ><v-icon>mdi-file-pdf-box</v-icon>generate pdf</v-btn
             >
@@ -149,6 +143,34 @@ export default {
         "YYYYMMDDHHmms"
       )}`;
     },
+    generatePDF() {
+       this.loading = true;
+      this.axios
+        .post(
+          `${this.api}pdf/print`,
+          { reports: this.Reports, prepared_by: this.userInfo.user_id, date_range: { date1: this.date1, date2: this.date2 } },
+          {
+            responseType:'arraybuffer'
+          }
+      )
+        .then((res) => { 
+          if (res.data) {
+            this.loading = false 
+            console.log(res.data)
+            const blob = new Blob([res.data], { type: 'application/pdf' });  // Change MIME type as needed
+
+            // Create a download link for the Blob
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'generated-pdf.pdf';  // Specify the filename for download
+            document.body.appendChild(link); // Append the link to the DOM (required for click to work)
+            link.click(); // Simulate a click to trigger the download
+            // document.body.removeChild(link); // Clean up the DOM by removing the link
+
+            console.log('File downloaded successfully!');
+          }
+        })
+    },
     generateReport() {
       if (this.date1 > this.date2) {
         alert("Date 1 is greater than Date 2");
@@ -164,15 +186,15 @@ export default {
               ["DateCreated"],
               ["desc"]
             ).filter((rec) => {
-              rec.date_arrival = this.moment(rec.date_arrival).format(
+              rec.date_arrival = rec.date_arrival ? this.moment(rec.date_arrival).format(
                 "YYYY-MM-DD HH:mm:ss A"
-              );
+              ) : '00:00:00';
               rec.checker = rec.checker ? rec.checker : "";
-              rec.date_departure = rec.date_departure
+              rec.date_departure = rec.date_departure ?  rec.date_departure
                 ? this.moment(rec.date_departure).format(
                     "YYYY-MM-DD HH:mm:ss A"
                   )
-                : "";
+                : "" : '00:00:00';
               rec.DateCreated = this.moment(rec.DateCreated).format(
                 "YYYY-MM-DD HH:mm:ss"
               );
@@ -180,6 +202,7 @@ export default {
             });
           }
           this.loading = false;
+          console.log(this.Reports ,'Reports')
         });
     },
   },

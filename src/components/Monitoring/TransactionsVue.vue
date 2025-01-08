@@ -1,45 +1,12 @@
 <template>
   <v-container fluid v-if="!loading">
-    <!-- <v-toolbar flat dense dark color="teal accent-4">
-      <v-toolbar-title
-        ><v-icon x-large>mdi-list-box-outline</v-icon>Visitor's
-        Form</v-toolbar-title
-      >
-    </v-toolbar> -->
     <br />
     <v-toolbar flat>
-      <!-- <v-flex md6 lg6 sm12 xs12>
-        <v-text-field
-          dense
-          color="teal accent-4"
-          rounded
-          outlined
-          readonly
-          label="Date Today"
-          prepend-inner-icon="mdi-calendar"
-          v-model="dateToday"
-        ></v-text-field>
-      </v-flex> -->
-      <v-menu
-        v-model="menu"
-        :close-on-content-click="false"
-        :nudge-right="40"
-        transition="scale-transition"
-        offset-y
-        min-width="auto"
-      >
+      <v-menu v-model="menu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y
+        min-width="auto">
         <template v-slot:activator="{ on, attrs }">
-          <v-text-field
-            v-model="dateToday"
-            rounded
-            dense
-            outlined
-            label="Filter Date"
-            prepend-inner-icon="mdi-calendar"
-            readonly
-            v-bind="attrs"
-            v-on="on"
-          ></v-text-field>
+          <v-text-field v-model="dateToday" rounded dense outlined label="Filter Date" prepend-inner-icon="mdi-calendar"
+            readonly v-bind="attrs" v-on="on"></v-text-field>
         </template>
         <v-date-picker v-model="dateToday">
           <v-spacer></v-spacer>
@@ -47,27 +14,10 @@
         </v-date-picker>
       </v-menu>
       <v-spacer />
-      <v-btn
-        v-if="
-          (userInfo &&
-            (userInfo.position == 'Home Owner' ||
-              userInfo.position == 'Administrator')) ||
-          !userInfo
-        "
-        @click="submitData()"
-        dark
-        rounded
-        color="teal darken-4"
-        >SUBMIT</v-btn
-      >
-      <v-btn
-        v-else
-        @click="proceedMonitoring()"
-        dark
-        small
-        rounded
-        color="teal darken-4"
-      >
+      <v-btn v-if="
+          userInfo
+        " @click="submitData()" dark rounded color="teal darken-4">SUBMIT</v-btn>
+      <v-btn v-else @click="proceedMonitoring()" dark small rounded color="teal darken-4">
         <v-icon>mdi-arrow-left</v-icon> Proceed to Monitoring
       </v-btn>
     </v-toolbar>
@@ -78,37 +28,14 @@
           <h2 class="text-center">Home Owners Information</h2>
           <v-divider style="border: 1px solid" />
           <v-card-text>
-            <v-autocomplete
-              :readonly="userInfo && userInfo.position == 'Home Owner'"
-              color="teal accent-4"
-              label=" Name "
-              dense
-              rounded
-              v-model="addObj"
-              outlined
-              :items="HomeOwners"
-              item-text="fullname"
-              return-object
-              required
-            />
-            <v-textarea
-              color="teal accent-4"
-              label="Address"
-              dense
-              v-model="addObj.address"
-              rounded
-              outlined
-              readonly
-            ></v-textarea>
-            <v-text-field
-              color="teal accent-4"
-              label="Contact Number"
-              dense
-              v-model="addObj.contactno"
-              rounded
-              outlined
-              readonly
-            ></v-text-field>
+            <v-autocomplete :readonly="userInfo && userInfo.position == 'Home Owner'" color="teal accent-4"
+              label=" Name " dense rounded v-model="addObj" outlined :items="HomeOwners" item-text="fullname"
+              return-object required />
+
+            <v-textarea color="teal accent-4" label="Address" dense v-model="addObj.address" rounded outlined
+              readonly></v-textarea>
+            <v-text-field color="teal accent-4" label="Contact Number" dense v-model="addObj.contactno" rounded outlined
+              readonly></v-text-field>
           </v-card-text>
         </v-card>
       </v-col>
@@ -117,61 +44,22 @@
           <h2 class="text-center">Visitors Information</h2>
           <v-divider style="border: 1px solid" />
           <v-card-text>
-            <v-text-field
-              color="teal accent-4"
-              label="Name"
-              dense
-              v-model="addObj.visitor_name"
-              rounded
-              outlined
-              required
-            ></v-text-field>
-            <label
-              >NOTE: Put N/A both vehicle and plate no if you dont have vehicle
+            <v-text-field color="teal accent-4" label="Name" dense v-model="addObj.visitor_name" rounded outlined
+              required></v-text-field>
+            <label>NOTE: Put N/A both vehicle and plate no if you dont have vehicle
             </label>
-            <v-text-field
-              color="teal accent-4"
-              label="Vehicle"
-              dense
-              v-model="addObj.vehicle"
-              rounded
-              outlined
-              required
-            ></v-text-field>
-            <v-text-field
-              color="teal accent-4"
-              label="Plate Number"
-              dense
-              v-model="addObj.plate_no"
-              rounded
-              outlined
-              required
-            ></v-text-field>
-            <v-autocomplete
-              color="teal accent-4"
-              label="Purpose of Visit"
-              dense
-              :items="[
+            <v-text-field color="teal accent-4" label="Vehicle" dense v-model="addObj.vehicle" rounded outlined
+              required></v-text-field>
+            <v-text-field color="teal accent-4" label="Plate Number" dense v-model="addObj.plate_no" rounded outlined
+              required></v-text-field>
+            <v-autocomplete color="teal accent-4" label="Purpose of Visit" dense :items="[
                 'For Holidays',
                 'Spend Time with Family/Friends',
                 'Celebration',
                 'Others',
-              ]"
-              v-model="purpose"
-              rounded
-              outlined
-              required
-            ></v-autocomplete>
-            <v-textarea
-              v-if="purpose == 'Others'"
-              color="teal accent-4"
-              label="Purpose of Visit"
-              dense
-              v-model="addObj.purpose"
-              rounded
-              outlined
-              :required="purpose == 'Others'"
-            ></v-textarea>
+              ]" v-model="purpose" rounded outlined required></v-autocomplete>
+            <v-textarea v-if="purpose == 'Others'" color="teal accent-4" label="Purpose of Visit" dense
+              v-model="addObj.purpose" rounded outlined :required="purpose == 'Others'"></v-textarea>
           </v-card-text>
         </v-card>
       </v-col>
@@ -238,6 +126,11 @@ export default {
           this.HomeOwners = res.data.filter((rec) => {
             this.addObj.vehicle = "N/A";
             this.addObj.plate_no = "N/A";
+            rec.fullname = `${rec.firstname} ${rec.lastname}`
+            rec.address = `\t\t\tPhase : ${rec.phase} 
+            Block : ${rec.block}
+            Lot : ${rec.lot}
+            Street : ${rec.street}`
             if (
               this.monitoring_data &&
               rec.user_id == this.monitoring_data.user_id
